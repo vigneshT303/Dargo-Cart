@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Orders – Drago Cart</title>
+
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Inter', Arial, sans-serif;
+      background-image: url("./assets/project.jpg");
+      background-size: cover;
+      background-attachment: fixed;
+      min-height: 100vh;
+      padding: 40px 20px;
+    }
+
+    h1 {
+      font-family: 'Times New Roman', Times, serif;
+      font-weight: bold;
+      font-style: italic;
+      color: rgb(185, 10, 185);
+      text-align: center;
+      font-size: 2.2rem;
+      margin-bottom: 30px;
+      text-shadow: 0 2px 8px rgba(128, 0, 128, 0.3);
+    }
+
+    #orders {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 50px;
+      justify-content: center;
+      margin-bottom: 30px;
+    }
+
+    .order-card {
+      border: 5px solid #a64ca6;
+      border-radius: 12px;
+      padding: 15px;
+      width: 240px;
+      box-shadow: 0 6px 10px rgba(128, 0, 128, 0.4);
+      text-align: center;
+      background: linear-gradient(135deg, #2e0258, white);
+      transition: transform 0.2s ease;
+    }
+
+    .order-card:hover {
+      transform: scale(1.03);
+    }
+
+    .order-card img {
+      border-radius: 10px;
+      margin-bottom: 10px;
+    }
+
+    .order-card h5 {
+      margin: 10px 0;
+      font-size: 18px;
+      color: rgb(61, 2, 61);
+      font-family: 'Times New Roman', Times, serif;
+      font-weight: bold;
+    }
+
+    .order-card p {
+      margin: 5px 0;
+      font-size: 15px;
+      color: brown;
+      font-weight: bold;
+    }
+
+    .form-section {
+      margin: 30px auto;
+      padding: 28px 24px;
+      border: 2px solid #800080;
+      border-radius: 12px;
+      background-color: plum;
+      width: 520px;
+      max-width: 95%;
+      box-shadow: 0 4px 8px rgba(128, 0, 128, 0.3);
+      transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
+    }
+
+    .form-section:hover {
+      transform: scale(1.01);
+      box-shadow: 0 8px 16px rgba(128, 0, 128, 0.5);
+      background-color: #dda0dd;
+    }
+
+    .form-section h2 {
+      text-align: center;
+      color: darkmagenta;
+      margin-bottom: 16px;
+      font-size: 22px;
+    }
+
+    .form-section label {
+      display: block;
+      margin: 10px 0 5px;
+      font-weight: bold;
+      color: black;
+    }
+
+    .form-section input,
+    .form-section textarea {
+      width: 100%;
+      padding: 9px 12px;
+      margin-bottom: 15px;
+      border: 1px solid #a64ca6;
+      border-radius: 6px;
+      background-color: whitesmoke;
+      font-size: 14px;
+      font-family: 'Inter', sans-serif;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    .form-section input:focus,
+    .form-section textarea:focus {
+      border-color: #6a0dad;
+    }
+
+    .place-btn {
+      display: block;
+      margin: 0 auto;
+      padding: 12px 32px;
+      font-size: 17px;
+      background-color: rgb(129, 9, 129);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      box-shadow: 0 4px 8px rgba(75, 0, 130, 0.4);
+      transition: background-color 0.2s ease, transform 0.15s ease;
+      font-weight: 700;
+      letter-spacing: 0.6px;
+      font-family: 'Inter', sans-serif;
+    }
+
+    .place-btn:hover {
+      background-color: #9932cc;
+      transform: scale(1.04);
+    }
+
+    .place-btn:disabled {
+      background-color: #aaa;
+      cursor: not-allowed;
+      transform: none;
+    }
+    #toast {
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      padding: 16px 22px;
+      border-radius: 12px;
+      font-weight: 600;
+      font-size: 15px;
+      color: white;
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.4s ease, transform 0.4s ease;
+      z-index: 9999;
+      pointer-events: none;
+      min-width: 290px;
+      max-width: 420px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+      line-height: 1.5;
+      word-break: break-word;
+    }
+
+    #toast.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    #toast.success {
+      background: linear-gradient(135deg, #5b0198, #9932cc);
+    }
+
+    #toast.error {
+      background: linear-gradient(135deg, #b71c1c, #e53935);
+    }
+
+    #toast.sending {
+      background: linear-gradient(135deg, #0d47a1, #1976d2);
+    }
+
+    /* ── Spinner ───────────────────────────── */
+    .spinner {
+      display: inline-block;
+      width: 16px;
+      height: 16px;
+      border: 3px solid rgba(255, 255, 255, 0.35);
+      border-top-color: #fff;
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+      vertical-align: middle;
+      margin-right: 8px;
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <h1>🛒 My Orders</h1>
+  <div id="orders"></div>
+
+  <div class="form-section">
+    <h2>📋 Order Details</h2>
+    <form id="orderForm">
+      <label for="custName">Full Name:</label>
+      <input type="text" id="custName" placeholder="Your full name" required>
+
+      <label for="orderId">Order ID:</label>
+      <input type="text" id="orderId" placeholder="e.g. ORD-2024-001" required>
+
+      <label for="contact">Contact No:</label>
+      <input type="tel" id="contact" placeholder="+91 XXXXX XXXXX" required>
+
+      <label for="custMessage">Message (optional):</label>
+      <textarea id="custMessage" rows="3" placeholder="Any special instructions…"></textarea>
+
+      <button type="submit" class="place-btn" id="submitBtn">✅ Place Order</button>
+    </form>
+  </div>
+
+  <div id="toast"></div>
+
+  <script>
+    const WEB3FORMS_ACCESS_KEY = "e69c9130-e2dc-48da-b07f-cbd363207a51";
+    const container = document.getElementById("orders");
+    const orders = JSON.parse(localStorage.getItem("orders")) || [];
+
+    if (orders.length === 0) {
+      container.innerHTML =
+        "<p style='text-align:center;color:#fff;font-size:18px;background:rgba(0,0,0,0.4);padding:12px 24px;border-radius:8px;'>No orders found!</p>";
+    } else {
+      orders.forEach((o) => {
+        const card = document.createElement("div");
+        card.classList.add("order-card");
+        card.innerHTML = `
+          <img src="${o.image}" alt="${o.name}" height="200" width="200">
+          <h5>${o.name}</h5>
+          <p>Color: ${o.color}</p>
+          <p>Price: Rs.${o.price}</p>
+          <p>Quantity: ${o.cartQty}</p>
+          <p>SubTotal: Rs.${o.cartQty * o.price}</p>
+        `;
+        container.appendChild(card);
+      });
+    }
+    let toastTimer;
+    function showToast(msg, type = "success", duration = 5000) {
+      const toast = document.getElementById("toast");
+      toast.innerHTML = msg;
+      toast.className = "show " + type;
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => { toast.className = ""; }, duration);
+    }
+    function buildProductText() {
+      if (!orders.length) return "No products.";
+      let grand = 0;
+      const lines = orders.map((o) => {
+        const sub = o.cartQty * o.price;
+        grand += sub;
+        return "- " + o.name + " | Color: " + o.color + " | Price: Rs." + o.price + " | Qty: " + o.cartQty + " | Subtotal: Rs." + sub;
+      });
+      lines.push("\nGRAND TOTAL: Rs." + grand);
+      return lines.join("\n");
+    }
+    document.getElementById("orderForm").addEventListener("submit", async function (e) {
+      e.preventDefault();
+
+      const customerName = document.getElementById("custName").value.trim();
+      const orderId = document.getElementById("orderId").value.trim();
+      const contact = document.getElementById("contact").value.trim();
+      const custMessage = document.getElementById("custMessage").value.trim();
+      const submitBtn = document.getElementById("submitBtn");
+      const orderDate = new Date().toLocaleString("en-IN", { timeZone: "Asia/Kolkata" });
+
+      submitBtn.disabled = true;
+      submitBtn.innerHTML = '<span class="spinner"></span>Sending...';
+      showToast("Placing your order and sending email...", "sending", 20000);
+
+      const messageBody =
+        "ORDER DETAILS\n" +
+        "====================\n" +
+        "Customer Name : " + customerName + "\n" +
+        "Order ID      : " + orderId + "\n" +
+        "Contact No    : " + contact + "\n" +
+        "Order Date    : " + orderDate + "\n" +
+        "Message       : " + (custMessage || "None") + "\n\n" +
+        "PRODUCTS ORDERED\n" +
+        "====================\n" +
+        buildProductText();
+      const payload = {
+        access_key: WEB3FORMS_ACCESS_KEY,
+        subject: "New Order [" + orderId + "] from " + customerName + " - Drago Cart",
+        from_name: "Drago Cart",
+        name: customerName,
+        email: "vigneshvicky182005@gmail.com",
+        message: messageBody,
+        botcheck: false
+      };
+
+      try {
+        const res = await fetch("https://api.web3forms.com/submit", {
+          method: "POST",
+          headers: { "Content-Type": "application/json", "Accept": "application/json" },
+          body: JSON.stringify(payload)
+        });
+
+        const data = await res.json();
+        console.log("Web3Forms response:", JSON.stringify(data));
+
+        if (res.ok && data.success) {
+          showToast("Order placed! Email sent to vigneshvicky182005@gmail.com", "success", 6000);
+          localStorage.removeItem("cart");
+          localStorage.removeItem("orders");
+          setTimeout(() => { window.location.href = "product.html"; }, 3500);
+        } else {
+          throw new Error(data.message || "Status " + res.status + " - Web3Forms rejected.");
+        }
+      } catch (err) {
+        console.error("Web3Forms error:", err.message);
+        showToast("Failed: " + err.message, "error", 15000);
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = "Place Order";
+      }
+    });
+  </script>
+</body>
+
+</html>

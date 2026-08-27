@@ -1,0 +1,26 @@
+{
+  "header": ["Home", "Products", "Contact"],
+  "carousel": [
+    { "image": "./assets/home1.avif", "title": "First Slide", "desc": "Some description for the first slide." },
+    { "image": "./assets/side2.webp", "title": "Second Slide", "desc": "Some description for the second slide." },
+    { "image": "./assets/side3.webp", "title": "Third Slide", "desc": "Some description for the third slide." }
+  ],
+  "products": [
+    { "id": 1, "name": "Samsung Galaxy A24", "price": 82000, "color": "Black", "image": "./assets/product1.jpeg" },
+    { "id": 2, "name": "Fastrack Watch", "price": 2500, "color": "Green", "image": "./assets/product2.jpeg" },
+    { "id": 3, "name": "RGB Mouse", "price": 1500, "color": "Gray", "image": "./assets/product3.jpeg" },
+    { "id": 4, "name": "Smart watch Ultra", "price": 3000, "color": "Red", "image": "./assets/product4.jpeg" },
+    { "id": 5, "name": "Iphone 15", "price": 65000, "color": "light blue", "image": "./assets/product5.jpeg" },
+    { "id": 6, "name": "Joy stick", "price": 2000, "color": "Black", "image": "./assets/product6.jpeg" },
+    { "id": 7, "name": "Iphone 17 Promax", "price": 120000, "color": "Orange", "image": "./assets/product7.jpeg" },
+    { "id": 8, "name": "Sandisk Pendrive", "price": 1500, "color": "Red", "image": "./assets/product8.jpeg" },
+    { "id": 9, "name": "Rolex Watch", "price": 6000, "color": "Glod", "image": "./assets/product9.jpeg" },
+    { "id": 10, "name": "Gaming Laptop", "price": 85000, "color": "Black", "image": "./assets/p1.webp" }
+  ],
+  "contact": {
+    "email": "support@myshop.com",
+    "phone": "+91 9876543210",
+    "address": "Tiruchirappalli, Tamil Nadu, India"
+  },
+  "footer": "© 2026 vignesh — All Rights Reserved"
+}
