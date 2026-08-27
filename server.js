@@ -209,8 +209,13 @@ app.post("/api/orders", async (req, res) => {
   }
 });
 
+// ── SPA Fallback (Clean URLs) ─────────────────────────────────
+app.get("*", (req, res) => {
+  res.sendFile(path.join(__dirname, "index.html"));
+});
+
 // ── Start Server ────────────────────────────────────────────
 app.listen(PORT, () => {
   console.log(`✅ Drago Cart server running at http://localhost:${PORT}`);
-  console.log(`   Open: http://localhost:${PORT}/index.html`);
+  console.log(`   Open: http://localhost:${PORT}/register`);
 });

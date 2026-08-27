@@ -823,16 +823,50 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script>
         /* ══════════════════════════════════════
-           PAGE ROUTER
+           PAGE ROUTER (Clean URLs via History API)
         ══════════════════════════════════════ */
-        function showPage(pageId) {
+        function showPage(pageId, pushToHistory = true) {
+            // Hide all pages
             document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            // Show target page
             document.getElementById(pageId).classList.add('active');
 
+            // Trigger necessary data loads
             if (pageId === 'page-product') loadProducts();
             if (pageId === 'page-cart') renderCart();
             if (pageId === 'page-orders') renderOrders();
+
+            // Update Browser URL cleanly
+            if (pushToHistory) {
+                const path = '/' + pageId.replace('page-', '');
+                window.history.pushState({ pageId }, '', path);
+            }
         }
+
+        // Handle Browser Forward / Back buttons
+        window.addEventListener('popstate', (e) => {
+            if (e.state && e.state.pageId) {
+                showPage(e.state.pageId, false);
+            } else {
+                initRoute();
+            }
+        });
+
+        // Initialize App Route from current URL
+        function initRoute() {
+            let path = window.location.pathname.substring(1); // removes leading '/'
+            let targetPage = 'page-register'; // default fallback
+
+            // Map clean URLs back to div IDs
+            if (['login', 'product', 'cart', 'orders', 'register'].includes(path)) {
+                targetPage = 'page-' + path;
+            }
+
+            showPage(targetPage, false);
+        }
+
+        // Run router on load
+        window.addEventListener('DOMContentLoaded', initRoute);
 
         function logOut() {
             showPage('page-login');
