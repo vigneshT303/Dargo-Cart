@@ -1,121 +1,210 @@
-const express    = require("express");
+const express = require("express");
+const mongoose = require("mongoose");
 const nodemailer = require("nodemailer");
-const cors       = require("cors");
-const path       = require("path");
+const cors = require("cors");
+const path = require("path");
 
-const app  = express();
+const app = express();
 const PORT = 3000;
+const MONGO_URI = "mongodb://localhost:27017/orders";
 
 // ── Middleware ──────────────────────────────────────────────
 app.use(cors());
 app.use(express.json());
-app.use(express.static(path.join(__dirname)));   // serve HTML files
+app.use(express.static(path.join(__dirname)));   // serve index.html + assets
 
-// ── Gmail SMTP Transporter ──────────────────────────────────
-// Use a Gmail App Password (not your real password).
-// Steps to create one:
-//   1. Go to https://myaccount.google.com/security
-//   2. Enable "2-Step Verification"
-//   3. Search "App passwords" → create one for "Mail"
-//   4. Paste the 16-character password below (no spaces)
+// ── MongoDB Connection ──────────────────────────────────────
+mongoose.connect(MONGO_URI)
+  .then(() => console.log("✅ MongoDB connected →", MONGO_URI))
+  .catch(err => {
+    console.error("❌ MongoDB connection error:", err.message);
+    process.exit(1);
+  });
 
-const transporter = nodemailer.createTransport({
-  service: "gmail",
-  auth: {
-    user: "vigneshvicky182005@gmail.com",   // sender Gmail address
-    pass: "YOUR_APP_PASSWORD_HERE",          // ← 16-char Gmail App Password
-  },
+// ── Schemas & Models ───────────────────────────────────────
+
+// Cart item
+const cartSchema = new mongoose.Schema({
+  productId: { type: Number, required: true, unique: true },
+  name: String,
+  color: String,
+  price: Number,
+  image: String,
+  cartQty: { type: Number, default: 1 }
+}, { timestamps: true });
+
+const Cart = mongoose.model("Cart", cartSchema);
+
+// Order (entire checkout event)
+const orderSchema = new mongoose.Schema({
+  customerName: String,
+  orderId: String,
+  contact: String,
+  message: String,
+  orderDate: String,
+  products: [
+    {
+      productId: Number,
+      name: String,
+      color: String,
+      price: Number,
+      image: String,
+      cartQty: Number
+    }
+  ],
+  grandTotal: Number
+}, { timestamps: true });
+
+const Order = mongoose.model("Order", orderSchema);
+
+// ═══════════════════════════════════════════════════════════
+//  CART  ROUTES
+// ═══════════════════════════════════════════════════════════
+
+// GET  /api/cart  → all cart items
+app.get("/api/cart", async (req, res) => {
+  try {
+    const items = await Cart.find().sort({ createdAt: 1 });
+    res.json({ success: true, cart: items });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
 });
 
-// ── POST /api/send-order ────────────────────────────────────
-app.post("/api/send-order", async (req, res) => {
-  const { customerName, orderId, contact, message, products, orderDate } = req.body;
-
-  // Validate required fields
-  if (!customerName || !orderId || !contact || !products) {
-    return res.status(400).json({ success: false, error: "Missing required fields." });
-  }
-
-  // Build product table rows
-  let grandTotal = 0;
-  const productRows = products.map((p) => {
-    const subtotal = p.cartQty * p.price;
-    grandTotal += subtotal;
-    return `
-      <tr>
-        <td style="padding:8px;border:1px solid #ddd;">
-          <img src="${p.image}" alt="${p.name}" width="60" style="border-radius:6px;">
-        </td>
-        <td style="padding:8px;border:1px solid #ddd;">${p.name}</td>
-        <td style="padding:8px;border:1px solid #ddd;">${p.color}</td>
-        <td style="padding:8px;border:1px solid #ddd;">₹${p.price}</td>
-        <td style="padding:8px;border:1px solid #ddd;">${p.cartQty}</td>
-        <td style="padding:8px;border:1px solid #ddd;font-weight:bold;">₹${subtotal}</td>
-      </tr>`;
-  }).join("");
-
-  const htmlBody = `
-  <div style="font-family:Arial,sans-serif;max-width:650px;margin:auto;border:2px solid #800080;border-radius:12px;overflow:hidden;">
-    <!-- Header -->
-    <div style="background:linear-gradient(135deg,#4a0080,#9932cc);padding:24px;text-align:center;">
-      <h1 style="color:white;margin:0;font-size:24px;">🛒 New Order Received</h1>
-      <p style="color:#e8c8ff;margin:6px 0 0;">Drago Cart</p>
-    </div>
-
-    <!-- Customer Info -->
-    <div style="padding:20px;background:#fdf4ff;">
-      <h2 style="color:#4a0080;border-bottom:2px solid #dda0dd;padding-bottom:8px;">Customer Details</h2>
-      <table style="width:100%;border-collapse:collapse;">
-        <tr><td style="padding:6px;width:160px;color:#555;font-weight:bold;">👤 Name</td><td style="padding:6px;">${customerName}</td></tr>
-        <tr style="background:#f5e6ff;"><td style="padding:6px;font-weight:bold;">🆔 Order ID</td><td style="padding:6px;">${orderId}</td></tr>
-        <tr><td style="padding:6px;font-weight:bold;">📞 Contact</td><td style="padding:6px;">${contact}</td></tr>
-        <tr style="background:#f5e6ff;"><td style="padding:6px;font-weight:bold;">📅 Date</td><td style="padding:6px;">${orderDate}</td></tr>
-        <tr><td style="padding:6px;font-weight:bold;">💬 Message</td><td style="padding:6px;">${message || "—"}</td></tr>
-      </table>
-    </div>
-
-    <!-- Products Table -->
-    <div style="padding:20px;background:#fff;">
-      <h2 style="color:#4a0080;border-bottom:2px solid #dda0dd;padding-bottom:8px;">🛍️ Ordered Products</h2>
-      <table style="width:100%;border-collapse:collapse;">
-        <thead>
-          <tr style="background:#800080;color:white;">
-            <th style="padding:10px;border:1px solid #ddd;">Image</th>
-            <th style="padding:10px;border:1px solid #ddd;">Product</th>
-            <th style="padding:10px;border:1px solid #ddd;">Color</th>
-            <th style="padding:10px;border:1px solid #ddd;">Price</th>
-            <th style="padding:10px;border:1px solid #ddd;">Qty</th>
-            <th style="padding:10px;border:1px solid #ddd;">Subtotal</th>
-          </tr>
-        </thead>
-        <tbody>${productRows}</tbody>
-        <tfoot>
-          <tr style="background:#f5e6ff;">
-            <td colspan="5" style="padding:10px;text-align:right;font-weight:bold;border:1px solid #ddd;">GRAND TOTAL</td>
-            <td style="padding:10px;font-weight:bold;font-size:16px;color:#4a0080;border:1px solid #ddd;">₹${grandTotal}</td>
-          </tr>
-        </tfoot>
-      </table>
-    </div>
-
-    <!-- Footer -->
-    <div style="background:#4a0080;padding:14px;text-align:center;">
-      <p style="color:#e8c8ff;margin:0;font-size:13px;">This is an automated email from Drago Cart 🛒</p>
-    </div>
-  </div>`;
-
-  const mailOptions = {
-    from    : `"Drago Cart" <vigneshvicky182005@gmail.com>`,
-    to      : "vigneshvicky182005@gmail.com",
-    subject : `🛒 New Order [${orderId}] from ${customerName}`,
-    html    : htmlBody,
-  };
-
+// POST /api/cart  → add product or increment qty
+app.post("/api/cart", async (req, res) => {
   try {
-    await transporter.sendMail(mailOptions);
-    res.json({ success: true, message: "Order email sent successfully!" });
+    const { id, name, color, price, image } = req.body;
+
+    if (!id) return res.status(400).json({ success: false, error: "Product id required." });
+
+    let item = await Cart.findOne({ productId: id });
+    if (item) {
+      item.cartQty += 1;
+      await item.save();
+      return res.json({ success: true, message: "Quantity updated", cart: item });
+    }
+
+    item = await Cart.create({ productId: id, name, color, price, image, cartQty: 1 });
+    res.status(201).json({ success: true, message: "Added to cart", cart: item });
   } catch (err) {
-    console.error("Mail error:", err.message);
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+// PUT  /api/cart/:productId  → set exact qty
+app.put("/api/cart/:productId", async (req, res) => {
+  try {
+    const { qty } = req.body;
+    if (!qty || qty < 1) return res.status(400).json({ success: false, error: "qty must be >= 1" });
+
+    const item = await Cart.findOneAndUpdate(
+      { productId: req.params.productId },
+      { cartQty: qty },
+      { new: true }
+    );
+    if (!item) return res.status(404).json({ success: false, error: "Cart item not found." });
+    res.json({ success: true, cart: item });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+// DELETE /api/cart/:productId  → remove one item
+app.delete("/api/cart/:productId", async (req, res) => {
+  try {
+    await Cart.findOneAndDelete({ productId: req.params.productId });
+    res.json({ success: true, message: "Item removed" });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+// DELETE /api/cart  → clear entire cart
+app.delete("/api/cart", async (req, res) => {
+  try {
+    await Cart.deleteMany({});
+    res.json({ success: true, message: "Cart cleared" });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+// ═══════════════════════════════════════════════════════════
+//  ORDERS  ROUTES
+// ═══════════════════════════════════════════════════════════
+
+// GET  /api/orders  → all past orders
+app.get("/api/orders", async (req, res) => {
+  try {
+    const orders = await Order.find().sort({ createdAt: -1 });
+    res.json({ success: true, orders });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+// POST /api/orders  → place order + send email via Web3Forms + clear cart
+app.post("/api/orders", async (req, res) => {
+  try {
+    const { customerName, orderId, contact, message, products, orderDate } = req.body;
+
+    if (!customerName || !orderId || !contact || !products || !products.length) {
+      return res.status(400).json({ success: false, error: "Missing required fields." });
+    }
+
+    let grandTotal = 0;
+    products.forEach(p => { grandTotal += p.cartQty * p.price; });
+
+    // Save order to MongoDB
+    const order = await Order.create({
+      customerName, orderId, contact,
+      message: message || "",
+      orderDate,
+      products,
+      grandTotal
+    });
+
+    // Clear the cart collection
+    await Cart.deleteMany({});
+
+    // ── Send email via Web3Forms (no SMTP credentials needed) ──
+    const WEB3FORMS_KEY = "e69c9130-e2dc-48da-b07f-cbd363207a51";
+    const lines = products.map(p => {
+      const sub = p.cartQty * p.price;
+      return `- ${p.name} | Color: ${p.color} | Price: Rs.${p.price} | Qty: ${p.cartQty} | Subtotal: Rs.${sub}`;
+    });
+    lines.push(`\nGRAND TOTAL: Rs.${grandTotal}`);
+
+    const messageBody =
+      "ORDER DETAILS\n====================\n" +
+      `Customer Name : ${customerName}\n` +
+      `Order ID      : ${orderId}\n` +
+      `Contact No    : ${contact}\n` +
+      `Order Date    : ${orderDate}\n` +
+      `Message       : ${message || "None"}\n\n` +
+      "PRODUCTS ORDERED\n====================\n" +
+      lines.join("\n");
+
+    const payload = {
+      access_key: WEB3FORMS_KEY,
+      subject: `New Order [${orderId}] from ${customerName} - Drago Cart`,
+      from_name: "Drago Cart",
+      name: customerName,
+      email: "vigneshvicky182005@gmail.com",
+      message: messageBody,
+      botcheck: false
+    };
+
+    // Fire-and-forget — don't block the response for email
+    fetch("https://api.web3forms.com/submit", {
+      method: "POST",
+      headers: { "Content-Type": "application/json", Accept: "application/json" },
+      body: JSON.stringify(payload)
+    }).catch(e => console.error("Web3Forms error:", e.message));
+
+    res.status(201).json({ success: true, message: "Order placed!", order });
+  } catch (err) {
     res.status(500).json({ success: false, error: err.message });
   }
 });
@@ -123,5 +212,5 @@ app.post("/api/send-order", async (req, res) => {
 // ── Start Server ────────────────────────────────────────────
 app.listen(PORT, () => {
   console.log(`✅ Drago Cart server running at http://localhost:${PORT}`);
-  console.log(`   Open: http://localhost:${PORT}/product.html`);
+  console.log(`   Open: http://localhost:${PORT}/index.html`);
 });
