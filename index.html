@@ -1,0 +1,1130 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Drago Cart</title>
+    <link rel="shortcut icon" href="./assets/my project logo.png" type="image/x-icon">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        /* ── Global Reset ── */
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Inter', Arial, sans-serif;
+            min-height: 100vh;
+        }
+
+        /* ── Page visibility ── */
+        .page {
+            display: none;
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        /* ══════════════════════════════════════════
+       REGISTER PAGE
+    ══════════════════════════════════════════ */
+        #page-register {
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: url('./assets/project.jpg') no-repeat center center fixed;
+            background-size: cover;
+        }
+
+        .register-box {
+            width: 350px;
+            padding: 25px;
+            background: lightpink;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px black;
+            text-align: center;
+            animation: float 4s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(-10px);
+            }
+
+            100% {
+                transform: translateY(0);
+            }
+        }
+
+        .register-box h1 {
+            margin-bottom: 20px;
+            color: rgb(164, 10, 191);
+            font-family: 'Times New Roman', Times, serif;
+            font-weight: bold;
+        }
+
+        .register-box input {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            box-shadow: inset 2px 2px 5px black;
+        }
+
+        .register-box button {
+            width: 100%;
+            padding: 12px;
+            background: purple;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            box-shadow: 0 5px 0 #4b004b;
+            transition: all 0.2s ease;
+        }
+
+        .register-box button:hover {
+            background: #a020f0;
+            transform: translateY(-3px);
+            box-shadow: 0 8px 0 #4b004b;
+        }
+
+        .register-box button:active {
+            transform: translateY(2px);
+            box-shadow: 0 3px 0 #4b004b;
+        }
+
+        .register-box .switch-link {
+            margin-top: 12px;
+            font-size: 13px;
+            color: #333;
+        }
+
+        .register-box .switch-link a {
+            color: purple;
+            cursor: pointer;
+            text-decoration: underline;
+        }
+
+        /* ══════════════════════════════════════════
+       LOGIN PAGE
+    ══════════════════════════════════════════ */
+        #page-login {
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: url('./assets/project.jpg') no-repeat center center fixed;
+            background-size: cover;
+        }
+
+        .login-box {
+            width: 320px;
+            padding: 25px;
+            background: pink;
+            border-radius: 12px;
+            box-shadow: 0 8px 20px black;
+            text-align: center;
+            transform: perspective(1000px) translateZ(0);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .login-box:hover {
+            transform: perspective(1000px) translateZ(15px);
+            box-shadow: 0 15px 30px black;
+        }
+
+        .login-box h1 {
+            margin-bottom: 20px;
+            color: purple;
+            font-family: 'Times New Roman', Times, serif;
+            font-weight: bold;
+            text-shadow: 1px 1px 2px black;
+        }
+
+        .login-box .input-box {
+            margin: 15px 0;
+            text-align: left;
+        }
+
+        .login-box .input-box label {
+            display: block;
+            font-size: 14px;
+            margin-bottom: 5px;
+            color: rgb(43, 41, 41);
+        }
+
+        .login-box .input-box input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid whitesmoke;
+            border-radius: 6px;
+            box-shadow: inset 2px 2px 5px black;
+            transition: transform 0.2s ease;
+        }
+
+        .login-box .input-box input:focus {
+            transform: scale(1.05);
+            border-color: purple;
+            outline: none;
+        }
+
+        .login-box button {
+            width: 100%;
+            padding: 12px;
+            background: purple;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            box-shadow: 0 5px 0 rgb(63, 1, 63);
+            transition: all 0.2s ease;
+        }
+
+        .login-box button:hover {
+            background: #a020f0;
+            transform: translateY(-3px);
+            box-shadow: 0 8px 0 rgb(29, 2, 29);
+        }
+
+        .login-box button:active {
+            transform: translateY(2px);
+            box-shadow: 0 3px 0 purple;
+        }
+
+        .login-box .switch-link {
+            margin-top: 12px;
+            font-size: 13px;
+            color: #333;
+        }
+
+        .login-box .switch-link a {
+            color: purple;
+            cursor: pointer;
+            text-decoration: underline;
+        }
+
+        /* ══════════════════════════════════════════
+       PRODUCT PAGE
+    ══════════════════════════════════════════ */
+        #page-product {
+            min-height: 100vh;
+            background: #f8f9fa;
+        }
+
+        #page-product .navbar {
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        #page-product section {
+            scroll-margin-top: 80px;
+        }
+
+        .navbar-dark.bg-dark {
+            background-color: #8c5db3 !important;
+        }
+
+        #page-product .card {
+            background-color: rgb(26, 189, 222);
+            margin: 10px;
+            padding: 10px;
+            text-align: center;
+            border-radius: 8px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        #page-product .card:hover {
+            transform: translateY(-10px) scale(1.01);
+            box-shadow: 0 8px 20px black;
+        }
+
+        #page-product .card img {
+            width: 100%;
+            height: 300px;
+            object-fit: cover;
+            border-radius: 7px;
+            transition: transform 0.3s ease;
+        }
+
+        #page-product .card img:hover {
+            transform: scale(1.01);
+        }
+
+        .carousel-item img {
+            width: 100%;
+            height: 500px;
+            object-fit: cover;
+            transition: transform 0.1s ease;
+        }
+
+        .carousel-item img:hover {
+            transform: scale(1.01);
+        }
+
+        .nav-link {
+            transition: color 0.3s ease, transform 0.3s ease;
+            font-family: 'Times New Roman', Times, serif;
+            font-weight: bold;
+        }
+
+        .nav-link:hover {
+            color: #7f207f;
+            transform: scale(1.1);
+        }
+
+        #contact-section {
+            background-color: rgb(174, 42, 150);
+            padding: 40px;
+            border-radius: 10px;
+            color: white;
+            transition: all 0.3s ease;
+        }
+
+        #contact-section .form-control {
+            border-radius: 8px;
+            border: none;
+            padding: 10px;
+        }
+
+        #contact-section .btn-primary {
+            background-color: rgb(165, 91, 169);
+        }
+
+        #contact-section .btn-primary:hover {
+            background-color: #8e44ad;
+            transform: scale(1.05);
+        }
+
+        #page-product footer.bg-dark {
+            min-height: 80px;
+            background-color: #b24c89 !important;
+            text-align: center;
+            padding: 20px;
+        }
+
+        /* ══════════════════════════════════════════
+       CART PAGE
+    ══════════════════════════════════════════ */
+        #page-cart {
+            min-height: 100vh;
+            padding: 20px;
+            background: url("./assets/1.webp") no-repeat center center fixed;
+            background-size: cover;
+        }
+
+        #page-cart h1 {
+            font-family: 'Times New Roman', Times, serif;
+            font-weight: bold;
+            font-style: italic;
+            color: white;
+            margin-bottom: 20px;
+        }
+
+        #cart {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .cart-card {
+            border: 5px solid black;
+            border-radius: 40px;
+            padding: 10px;
+            width: 300px;
+            box-shadow: 0 5px 6px black;
+            text-align: center;
+            background-color: lightcoral;
+            transition: transform 0.2s ease;
+        }
+
+        .cart-card:hover {
+            transform: scale(1.05);
+        }
+
+        .cart-card img {
+            border-radius: 100px;
+            margin-bottom: 10px;
+        }
+
+        .cart-card h5 {
+            margin: 10px 0;
+            font-size: 20px;
+        }
+
+        .cart-card p {
+            margin: 5px 0;
+            font-size: 15px;
+            font-weight: bold;
+        }
+
+        .cart-card button {
+            margin: 5px;
+            padding: 5px 10px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            background-color: brown;
+            color: white;
+        }
+
+        .cart-card button:hover {
+            background-color: red;
+        }
+
+        #total {
+            margin-top: 20px;
+            font-size: 22px;
+            color: whitesmoke;
+        }
+
+        button.place-btn {
+            margin-top: 20px;
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        button.place-btn:hover {
+            background-color: #1e7e34;
+        }
+
+        .back-btn {
+            margin-bottom: 16px;
+            padding: 8px 18px;
+            background: rgba(0, 0, 0, 0.55);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background 0.2s;
+        }
+
+        .back-btn:hover {
+            background: rgba(0, 0, 0, 0.8);
+        }
+
+        /* ══════════════════════════════════════════
+       ORDERS PAGE
+    ══════════════════════════════════════════ */
+        #page-orders {
+            min-height: 100vh;
+            background: url("./assets/project.jpg") no-repeat center center fixed;
+            background-size: cover;
+            padding: 40px 20px;
+        }
+
+        #page-orders h1 {
+            font-family: 'Times New Roman', Times, serif;
+            font-weight: bold;
+            font-style: italic;
+            color: rgb(185, 10, 185);
+            text-align: center;
+            font-size: 2.2rem;
+            margin-bottom: 30px;
+            text-shadow: 0 2px 8px rgba(128, 0, 128, 0.3);
+        }
+
+        #orders {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 50px;
+            justify-content: center;
+            margin-bottom: 30px;
+        }
+
+        .order-card {
+            border: 5px solid #a64ca6;
+            border-radius: 12px;
+            padding: 15px;
+            width: 240px;
+            box-shadow: 0 6px 10px rgba(128, 0, 128, 0.4);
+            text-align: center;
+            background: linear-gradient(135deg, #2e0258, white);
+            transition: transform 0.2s ease;
+        }
+
+        .order-card:hover {
+            transform: scale(1.03);
+        }
+
+        .order-card img {
+            border-radius: 10px;
+            margin-bottom: 10px;
+        }
+
+        .order-card h5 {
+            margin: 10px 0;
+            font-size: 18px;
+            color: rgb(61, 2, 61);
+            font-family: 'Times New Roman', Times, serif;
+            font-weight: bold;
+        }
+
+        .order-card p {
+            margin: 5px 0;
+            font-size: 15px;
+            color: brown;
+            font-weight: bold;
+        }
+
+        .form-section {
+            margin: 30px auto;
+            padding: 28px 24px;
+            border: 2px solid #800080;
+            border-radius: 12px;
+            background-color: plum;
+            width: 520px;
+            max-width: 95%;
+            box-shadow: 0 4px 8px rgba(128, 0, 128, 0.3);
+            transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
+        }
+
+        .form-section:hover {
+            transform: scale(1.01);
+            box-shadow: 0 8px 16px rgba(128, 0, 128, 0.5);
+            background-color: #dda0dd;
+        }
+
+        .form-section h2 {
+            text-align: center;
+            color: darkmagenta;
+            margin-bottom: 16px;
+            font-size: 22px;
+        }
+
+        .form-section label {
+            display: block;
+            margin: 10px 0 5px;
+            font-weight: bold;
+            color: black;
+        }
+
+        .form-section input,
+        .form-section textarea {
+            width: 100%;
+            padding: 9px 12px;
+            margin-bottom: 15px;
+            border: 1px solid #a64ca6;
+            border-radius: 6px;
+            background-color: whitesmoke;
+            font-size: 14px;
+            font-family: 'Inter', sans-serif;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .form-section input:focus,
+        .form-section textarea:focus {
+            border-color: #6a0dad;
+        }
+
+        .place-order-btn {
+            display: block;
+            margin: 0 auto;
+            padding: 12px 32px;
+            font-size: 17px;
+            background-color: rgb(129, 9, 129);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            box-shadow: 0 4px 8px rgba(75, 0, 130, 0.4);
+            transition: background-color 0.2s ease, transform 0.15s ease;
+            font-weight: 700;
+            letter-spacing: 0.6px;
+        }
+
+        .place-order-btn:hover {
+            background-color: #9932cc;
+            transform: scale(1.04);
+        }
+
+        .place-order-btn:disabled {
+            background-color: #aaa;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* Toast */
+        #toast {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            padding: 16px 22px;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 15px;
+            color: white;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.4s ease, transform 0.4s ease;
+            z-index: 9999;
+            pointer-events: none;
+            min-width: 290px;
+            max-width: 420px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+            line-height: 1.5;
+            word-break: break-word;
+        }
+
+        #toast.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        #toast.success {
+            background: linear-gradient(135deg, #5b0198, #9932cc);
+        }
+
+        #toast.error {
+            background: linear-gradient(135deg, #b71c1c, #e53935);
+        }
+
+        #toast.sending {
+            background: linear-gradient(135deg, #0d47a1, #1976d2);
+        }
+
+        /* Spinner */
+        .spinner {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            border: 3px solid rgba(255, 255, 255, 0.35);
+            border-top-color: #fff;
+            border-radius: 50%;
+            animation: spin 0.7s linear infinite;
+            vertical-align: middle;
+            margin-right: 8px;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* ── Status / msg helpers ── */
+        .msg-success {
+            color: green;
+            margin-top: 8px;
+            font-size: 15px;
+        }
+
+        .msg-error {
+            color: red;
+            margin-top: 8px;
+            font-size: 15px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- ═══════════════════════════════════════════════════
+       PAGE 1 – REGISTER
+  ═══════════════════════════════════════════════════ -->
+    <div id="page-register" class="page active">
+        <div class="register-box">
+            <h1>Register Form</h1>
+            <form id="registerForm">
+                <input type="text" id="reg-name" placeholder="Enter name" required>
+                <input type="email" id="reg-email" placeholder="Enter email" required>
+                <input type="password" id="reg-pwd" placeholder="Enter password" required>
+                <button type="submit">Submit</button>
+            </form>
+            <h2 id="reg-msg"></h2>
+            <p class="switch-link">Already have an account? <a onclick="showPage('page-login')">Login here</a></p>
+        </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════
+       PAGE 2 – LOGIN
+  ═══════════════════════════════════════════════════ -->
+    <div id="page-login" class="page">
+        <div class="login-box">
+            <h1>Login Form</h1>
+            <form id="loginForm">
+                <div class="input-box">
+                    <label for="login-name">Username:</label>
+                    <input type="text" id="login-name" placeholder="Enter name" required>
+                </div>
+                <div class="input-box">
+                    <label for="login-pwd">Password:</label>
+                    <input type="password" id="login-pwd" placeholder="Enter password" required>
+                </div>
+                <button type="submit">Login</button>
+            </form>
+            <h2 id="login-msg"></h2>
+            <p class="switch-link">New here? <a onclick="showPage('page-register')">Register now</a></p>
+        </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════
+       PAGE 3 – PRODUCTS
+  ═══════════════════════════════════════════════════ -->
+    <div id="page-product" class="page">
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+            <div class="container-fluid">
+                <a class="navbar-brand" href="#">Drago Cart</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul id="header" class="navbar-nav ms-auto"></ul>
+                    <ul class="navbar-nav">
+                        <li class="nav-item">
+                            <a class="nav-link" href="#" onclick="navigateToCart()">🛒 Cart</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-warning" href="#" onclick="logOut()">🚪 Logout</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Carousel -->
+        <section>
+            <div id="homeCarousel" class="carousel slide mt-4" data-bs-ride="carousel">
+                <div class="carousel-indicators" id="carousel-indicators"></div>
+                <div class="carousel-inner" id="carousel-inner"></div>
+                <button class="carousel-control-prev" type="button" data-bs-target="#homeCarousel" data-bs-slide="prev">
+                    <span class="carousel-control-prev-icon"></span>
+                </button>
+                <button class="carousel-control-next" type="button" data-bs-target="#homeCarousel" data-bs-slide="next">
+                    <span class="carousel-control-next-icon"></span>
+                </button>
+            </div>
+        </section>
+
+        <!-- Products -->
+        <section id="prod-section">
+            <div class="container-fluid mt-4" id="products-section">
+                <h2 class="text-center">Products</h2>
+                <div id="products" class="row"></div>
+            </div>
+        </section>
+
+        <!-- Contact -->
+        <section>
+            <div id="contact-section" class="container mt-4">
+                <div class="row justify-content-center">
+                    <div class="col-md-8 col-lg-6">
+                        <h1>
+                            <center>Contact Us</center>
+                        </h1>
+                        <form>
+                            <div class="mb-3">
+                                <label class="form-label">Name:</label>
+                                <input type="text" class="form-control" placeholder="Enter your name" required>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Email:</label>
+                                <input type="email" class="form-control" placeholder="Enter your email" required>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Contact no:</label>
+                                <input type="text" class="form-control" placeholder="Contact" required>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Message:</label>
+                                <textarea class="form-control" rows="4" placeholder="Enter your message"
+                                    required></textarea>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Send Message</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <footer class="bg-dark text-white text-center py-3 mt-4" id="footer"></footer>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════
+       PAGE 4 – CART
+  ═══════════════════════════════════════════════════ -->
+    <div id="page-cart" class="page">
+        <button class="back-btn" onclick="showPage('page-product')">← Back to Products</button>
+        <h1>My Cart</h1>
+        <div id="cart"></div>
+        <h1 id="total"></h1>
+        <button class="place-btn" onclick="placeMyOrder()">Place Order</button>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════
+       PAGE 5 – ORDERS
+  ═══════════════════════════════════════════════════ -->
+    <div id="page-orders" class="page">
+        <button class="back-btn" onclick="showPage('page-cart')">← Back to Cart</button>
+        <h1>🛒 My Orders</h1>
+        <div id="orders"></div>
+
+        <div class="form-section">
+            <h2>📋 Order Details</h2>
+            <form id="orderForm">
+                <label for="custName">Full Name:</label>
+                <input type="text" id="custName" placeholder="Your full name" required>
+
+                <label for="orderId">Order ID:</label>
+                <input type="text" id="orderId" placeholder="e.g. ORD-2024-001" required>
+
+                <label for="contact">Contact No:</label>
+                <input type="tel" id="contact" placeholder="+91 XXXXX XXXXX" required>
+
+                <label for="custMessage">Message (optional):</label>
+                <textarea id="custMessage" rows="3" placeholder="Any special instructions…"></textarea>
+
+                <button type="submit" class="place-order-btn" id="submitBtn">✅ Place Order</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Toast notification -->
+    <div id="toast"></div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        /* ══════════════════════════════════════
+           PAGE ROUTER
+        ══════════════════════════════════════ */
+        function showPage(pageId) {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.getElementById(pageId).classList.add('active');
+
+            if (pageId === 'page-product') loadProducts();
+            if (pageId === 'page-cart') renderCart();
+            if (pageId === 'page-orders') renderOrders();
+        }
+
+        function logOut() {
+            showPage('page-login');
+        }
+
+        function navigateToCart() {
+            showPage('page-cart');
+        }
+
+        /* ══════════════════════════════════════
+           REGISTER
+        ══════════════════════════════════════ */
+        document.getElementById('registerForm').onsubmit = function (e) {
+            e.preventDefault();
+            const user = {
+                name: document.getElementById('reg-name').value,
+                email: document.getElementById('reg-email').value,
+                pwd: document.getElementById('reg-pwd').value
+            };
+            localStorage.setItem('user', JSON.stringify(user));
+            const msg = document.getElementById('reg-msg');
+            msg.textContent = 'Register Success';
+            msg.className = 'msg-success';
+            setTimeout(() => showPage('page-login'), 1500);
+        };
+
+        /* ══════════════════════════════════════
+           LOGIN
+        ══════════════════════════════════════ */
+        document.getElementById('loginForm').onsubmit = function (e) {
+            e.preventDefault();
+            const name = document.getElementById('login-name').value;
+            const password = document.getElementById('login-pwd').value;
+            const stored = JSON.parse(localStorage.getItem('user'));
+            const msg = document.getElementById('login-msg');
+
+            if (stored && name === stored.name && password === stored.pwd) {
+                msg.textContent = 'Login Success';
+                msg.className = 'msg-success';
+                setTimeout(() => showPage('page-product'), 1500);
+            } else {
+                msg.textContent = 'INVALID USER';
+                msg.className = 'msg-error';
+            }
+        };
+
+        /* ══════════════════════════════════════
+           PRODUCTS  (loaded from product.json)
+        ══════════════════════════════════════ */
+        let productsLoaded = false;
+
+        function loadProducts() {
+            if (productsLoaded) return;
+            fetch('product.json')
+                .then(r => r.json())
+                .then(siteData => {
+                    productsLoaded = true;
+
+                    /* Header nav */
+                    const headerUl = document.getElementById('header');
+                    siteData.header.forEach(item => {
+                        let li = document.createElement('li');
+                        li.classList.add('nav-item');
+                        let linkTarget = '#';
+                        if (item.toLowerCase() === 'home') linkTarget = '#homeCarousel';
+                        if (item.toLowerCase() === 'products') linkTarget = '#products-section';
+                        if (item.toLowerCase() === 'contact') linkTarget = '#contact-section';
+                        li.innerHTML = `<a class="nav-link" href="${linkTarget}">${item}</a>`;
+                        headerUl.appendChild(li);
+                    });
+
+                    /* Carousel */
+                    const indicators = document.getElementById('carousel-indicators');
+                    const inner = document.getElementById('carousel-inner');
+                    siteData.carousel.forEach((slide, index) => {
+                        let btn = document.createElement('button');
+                        btn.type = 'button';
+                        btn.setAttribute('data-bs-target', '#homeCarousel');
+                        btn.setAttribute('data-bs-slide-to', index);
+                        if (index === 0) btn.classList.add('active');
+                        indicators.appendChild(btn);
+
+                        let div = document.createElement('div');
+                        div.classList.add('carousel-item');
+                        if (index === 0) div.classList.add('active');
+                        div.innerHTML = `
+              <img src="${slide.image}" class="d-block w-100" alt="${slide.title}">
+              <div class="carousel-caption d-none d-md-block">
+                <h5>${slide.title}</h5>
+                <p>${slide.desc}</p>
+              </div>`;
+                        inner.appendChild(div);
+                    });
+
+                    /* Product cards */
+                    const productsDiv = document.getElementById('products');
+                    siteData.products.forEach(p => {
+                        let col = document.createElement('div');
+                        col.classList.add('col-lg-3', 'col-md-4', 'col-sm-6');
+                        col.innerHTML = `
+              <div class="card mb-4">
+                <img src="${p.image}" class="card-img-top" alt="${p.name}">
+                <div class="card-body">
+                  <h5 class="card-title">${p.name}</h5>
+                  <p class="card-text">Color: ${p.color}</p>
+                  <p class="card-text">Price: ₹${p.price}</p>
+                  <button class="btn btn-primary" onclick='addToCart(${JSON.stringify(p)})'>Add to Cart</button>
+                </div>
+              </div>`;
+                        productsDiv.appendChild(col);
+                    });
+
+                    document.getElementById('footer').innerText = siteData.footer;
+                })
+                .catch(err => console.error('Error loading data:', err));
+        }
+
+        function addToCart(product) {
+            let cart = JSON.parse(localStorage.getItem('cart')) || [];
+            const exists = cart.find(e => e.id == product.id);
+            if (exists) {
+                exists.cartQty += 1;
+                alert(`${product.name} quantity updated to ${exists.cartQty} in cart!`);
+            } else {
+                cart.push({ ...product, cartQty: 1 });
+                alert(`${product.name} added to cart! 🛒`);
+            }
+            localStorage.setItem('cart', JSON.stringify(cart));
+        }
+
+        /* ══════════════════════════════════════
+           CART
+        ══════════════════════════════════════ */
+        function renderCart() {
+            const container = document.getElementById('cart');
+            container.innerHTML = '';
+            document.getElementById('total').innerText = '';
+
+            const cartItems = JSON.parse(localStorage.getItem('cart')) || [];
+
+            if (cartItems.length === 0) {
+                container.innerHTML = "<p style='color:white;font-size:18px;'>Your cart is empty!</p>";
+                return;
+            }
+
+            let carttotal = 0;
+            cartItems.forEach(c => {
+                carttotal += c.price * c.cartQty;
+                let card = document.createElement('div');
+                card.classList.add('cart-card');
+                card.innerHTML = `
+          <img src="${c.image}" alt="${c.name}" height="200" width="200">
+          <h5 class="card-title">${c.name}</h5>
+          <p class="card-text">Color: ${c.color}</p>
+          <p class="card-text">Price: ₹${c.price}</p>
+          <button onclick="decQty(${c.id})">-</button>
+          <span>${c.cartQty}</span>
+          <button onclick="incQty(${c.id})">+</button>
+          <p>SubTotal: ₹${c.cartQty * c.price}</p>
+          <button onclick="removeEle(${c.id})">Remove</button>`;
+                container.appendChild(card);
+            });
+
+            document.getElementById('total').innerText = `Total Amount: ₹${carttotal}`;
+        }
+
+        function incQty(id) {
+            let cart = JSON.parse(localStorage.getItem('cart')) || [];
+            let item = cart.find(c => c.id == id);
+            if (item) item.cartQty++;
+            localStorage.setItem('cart', JSON.stringify(cart));
+            renderCart();
+        }
+
+        function decQty(id) {
+            let cart = JSON.parse(localStorage.getItem('cart')) || [];
+            let item = cart.find(c => c.id == id);
+            if (item && item.cartQty > 1) item.cartQty--;
+            localStorage.setItem('cart', JSON.stringify(cart));
+            renderCart();
+        }
+
+        function removeEle(id) {
+            let cart = JSON.parse(localStorage.getItem('cart')) || [];
+            localStorage.setItem('cart', JSON.stringify(cart.filter(c => c.id != id)));
+            renderCart();
+        }
+
+        function placeMyOrder() {
+            const cart = JSON.parse(localStorage.getItem('cart')) || [];
+            if (!cart.length) { alert('Cart is empty!'); return; }
+            localStorage.setItem('orders', JSON.stringify(cart));
+            showPage('page-orders');
+        }
+
+        /* ══════════════════════════════════════
+           ORDERS
+        ══════════════════════════════════════ */
+        function renderOrders() {
+            const container = document.getElementById('orders');
+            container.innerHTML = '';
+
+            const ordersList = JSON.parse(localStorage.getItem('orders')) || [];
+
+            if (ordersList.length === 0) {
+                container.innerHTML = "<p style='text-align:center;color:#fff;font-size:18px;background:rgba(0,0,0,0.4);padding:12px 24px;border-radius:8px;'>No orders found!</p>";
+            } else {
+                ordersList.forEach(o => {
+                    const card = document.createElement('div');
+                    card.classList.add('order-card');
+                    card.innerHTML = `
+            <img src="${o.image}" alt="${o.name}" height="200" width="200">
+            <h5>${o.name}</h5>
+            <p>Color: ${o.color}</p>
+            <p>Price: Rs.${o.price}</p>
+            <p>Quantity: ${o.cartQty}</p>
+            <p>SubTotal: Rs.${o.cartQty * o.price}</p>`;
+                    container.appendChild(card);
+                });
+            }
+        }
+
+        /* Toast */
+        let toastTimer;
+        function showToast(msg, type = 'success', duration = 5000) {
+            const toast = document.getElementById('toast');
+            toast.innerHTML = msg;
+            toast.className = 'show ' + type;
+            clearTimeout(toastTimer);
+            toastTimer = setTimeout(() => { toast.className = ''; }, duration);
+        }
+
+        function buildProductText() {
+            const ordersList = JSON.parse(localStorage.getItem('orders')) || [];
+            if (!ordersList.length) return 'No products.';
+            let grand = 0;
+            const lines = ordersList.map(o => {
+                const sub = o.cartQty * o.price;
+                grand += sub;
+                return `- ${o.name} | Color: ${o.color} | Price: Rs.${o.price} | Qty: ${o.cartQty} | Subtotal: Rs.${sub}`;
+            });
+            lines.push(`\nGRAND TOTAL: Rs.${grand}`);
+            return lines.join('\n');
+        }
+
+        document.getElementById('orderForm').addEventListener('submit', async function (e) {
+            e.preventDefault();
+
+            const WEB3FORMS_ACCESS_KEY = "e69c9130-e2dc-48da-b07f-cbd363207a51";
+            const ordersList = JSON.parse(localStorage.getItem('orders')) || [];
+            const customerName = document.getElementById('custName').value.trim();
+            const orderId = document.getElementById('orderId').value.trim();
+            const contact = document.getElementById('contact').value.trim();
+            const custMessage = document.getElementById('custMessage').value.trim();
+            const submitBtn = document.getElementById('submitBtn');
+            const orderDate = new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' });
+
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<span class="spinner"></span>Sending...';
+            showToast('Placing your order and sending email...', 'sending', 20000);
+
+            const messageBody =
+                'ORDER DETAILS\n' +
+                '====================\n' +
+                'Customer Name : ' + customerName + '\n' +
+                'Order ID      : ' + orderId + '\n' +
+                'Contact No    : ' + contact + '\n' +
+                'Order Date    : ' + orderDate + '\n' +
+                'Message       : ' + (custMessage || 'None') + '\n\n' +
+                'PRODUCTS ORDERED\n' +
+                '====================\n' +
+                buildProductText();
+
+            const payload = {
+                access_key: WEB3FORMS_ACCESS_KEY,
+                subject: `New Order [${orderId}] from ${customerName} - Drago Cart`,
+                from_name: 'Drago Cart',
+                name: customerName,
+                email: 'vigneshvicky182005@gmail.com',
+                message: messageBody,
+                botcheck: false
+            };
+
+            try {
+                const res = await fetch('https://api.web3forms.com/submit', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                const data = await res.json();
+
+                if (res.ok && data.success) {
+                    showToast('Order placed! Email sent to vigneshvicky182005@gmail.com', 'success', 6000);
+                    localStorage.removeItem('cart');
+                    localStorage.removeItem('orders');
+                    setTimeout(() => showPage('page-product'), 3500);
+                } else {
+                    throw new Error(data.message || `Status ${res.status} - Web3Forms rejected.`);
+                }
+            } catch (err) {
+                console.error('Web3Forms error:', err.message);
+                showToast('Failed: ' + err.message, 'error', 15000);
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = '✅ Place Order';
+            }
+        });
+    </script>
+</body>
+
+</html>
