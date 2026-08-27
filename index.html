@@ -24,13 +24,26 @@
             min-height: 100vh;
         }
 
-        /* ── Page visibility ── */
+        /* ── Page visibility & Transitions ── */
         .page {
             display: none;
         }
 
         .page.active {
             display: block;
+            animation: pageFadeIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        @keyframes pageFadeIn {
+            0% {
+                opacity: 0;
+                transform: translateY(15px);
+            }
+
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         /* ══════════════════════════════════════════
@@ -834,6 +847,11 @@
         ══════════════════════════════════════ */
         document.getElementById('registerForm').onsubmit = function (e) {
             e.preventDefault();
+            const btn = e.target.querySelector('button');
+            const originalText = btn.innerText;
+            btn.innerHTML = '<span class="spinner"></span>Registering...';
+            btn.disabled = true;
+
             const user = {
                 name: document.getElementById('reg-name').value,
                 email: document.getElementById('reg-email').value,
@@ -843,7 +861,12 @@
             const msg = document.getElementById('reg-msg');
             msg.textContent = 'Register Success';
             msg.className = 'msg-success';
-            setTimeout(() => showPage('page-login'), 1500);
+
+            setTimeout(() => {
+                btn.innerHTML = originalText;
+                btn.disabled = false;
+                showPage('page-login');
+            }, 1500);
         };
 
         /* ══════════════════════════════════════
@@ -851,6 +874,11 @@
         ══════════════════════════════════════ */
         document.getElementById('loginForm').onsubmit = function (e) {
             e.preventDefault();
+            const btn = e.target.querySelector('button');
+            const originalText = btn.innerText;
+            btn.innerHTML = '<span class="spinner"></span>Logging in...';
+            btn.disabled = true;
+
             const name = document.getElementById('login-name').value;
             const password = document.getElementById('login-pwd').value;
             const stored = JSON.parse(localStorage.getItem('user'));
@@ -859,10 +887,16 @@
             if (stored && name === stored.name && password === stored.pwd) {
                 msg.textContent = 'Login Success';
                 msg.className = 'msg-success';
-                setTimeout(() => showPage('page-product'), 1500);
+                setTimeout(() => {
+                    btn.innerHTML = originalText;
+                    btn.disabled = false;
+                    showPage('page-product');
+                }, 1500);
             } else {
                 msg.textContent = 'INVALID USER';
                 msg.className = 'msg-error';
+                btn.innerHTML = originalText;
+                btn.disabled = false;
             }
         };
 
