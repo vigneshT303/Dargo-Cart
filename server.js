@@ -1,13 +1,15 @@
 require("dotenv").config();
 const express = require("express");
 const mongoose = require("mongoose");
-const nodemailer = require("nodemailer");
+const https = require("https");
 const cors = require("cors");
 const path = require("path");
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 const MONGO_URI = process.env.MONGO_URI || "mongodb://localhost:27017/orders";
+const TO_EMAIL = process.env.CLIENT_EMAIL || "vigneshvicky182005@gmail.com";
+const WEB3FORMS_KEY = "e69c9130-e2dc-48da-b07f-cbd363207a51";
 
 // ── Middleware ──────────────────────────────────────────────
 app.use(cors());
@@ -22,19 +24,45 @@ mongoose.connect(MONGO_URI)
     process.exit(1);
   });
 
-// ── Nodemailer Transporter (Gmail App Password from .env) ───
-const transporter = nodemailer.createTransport({
-  service: "gmail",
-  auth: {
-    user: process.env.CLIENT_EMAIL,
-    pass: process.env.CLIENT_PASSWORD
-  }
-});
-
-transporter.verify((err) => {
-  if (err) console.error("❌ Mail transporter error:", err.message);
-  else console.log("✅ Mail transporter ready →", process.env.CLIENT_EMAIL);
-});
+// ── Web3Forms Email Helper (no SMTP / App Password needed) ──
+function sendMail(subject, text) {
+  return new Promise((resolve) => {
+    const body = JSON.stringify({
+      access_key: WEB3FORMS_KEY,
+      subject,
+      message: text,
+      from_name: "Drago Cart",
+      email: TO_EMAIL,
+      botcheck: false
+    });
+    const req = https.request(
+      {
+        hostname: "api.web3forms.com",
+        path: "/submit",
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Content-Length": Buffer.byteLength(body)
+        }
+      },
+      (res) => {
+        let data = "";
+        res.on("data", (c) => (data += c));
+        res.on("end", () => {
+          try { resolve(JSON.parse(data)); }
+          catch { resolve({ success: false, message: "Parse error" }); }
+        });
+      }
+    );
+    req.on("error", (e) => {
+      console.error("Web3Forms request error:", e.message);
+      resolve({ success: false, message: e.message });
+    });
+    req.write(body);
+    req.end();
+  });
+}
+console.log("✅ Mail helper ready (Web3Forms) → deliveries to:", TO_EMAIL);
 
 // ── Schemas & Models ───────────────────────────────────────
 
@@ -224,15 +252,16 @@ app.post("/api/contact", async (req, res) => {
       return res.status(400).json({ success: false, error: "Missing fields" });
     }
 
-    await transporter.sendMail({
-      from: `"Drago Cart" <${process.env.CLIENT_EMAIL}>`,
-      to: process.env.CLIENT_EMAIL,
-      subject: `New Contact Inquiry from ${name}`,
-      text: `You have received a new contact message:\n\nName: ${name}\nEmail: ${email}\nPhone: ${phone || "N/A"}\n\nMessage:\n${message}`,
-      replyTo: email
-    });
+    const result = await sendMail(
+      `New Contact Inquiry from ${name}`,
+      `New contact message:\n\nName: ${name}\nEmail: ${email}\nPhone: ${phone || "N/A"}\n\nMessage:\n${message}`
+    );
 
-    res.status(200).json({ success: true, message: "Message sent!" });
+    if (result.success) {
+      res.status(200).json({ success: true, message: "Message sent!" });
+    } else {
+      throw new Error(result.message || "Web3Forms failed");
+    }
   } catch (err) {
     console.error("Contact route error:", err.message);
     res.status(500).json({ success: false, error: "Failed to send email: " + err.message });
