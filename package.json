@@ -9,9 +9,10 @@
   },
   "dependencies": {
     "cors": "^2.8.5",
+    "dotenv": "^17.4.2",
     "express": "^4.22.2",
     "mongoose": "^9.9.4",
-    "nodemailer": "^6.9.13",
+    "nodemailer": "^6.10.1",
     "puppeteer": "^25.9.0"
   },
   "devDependencies": {

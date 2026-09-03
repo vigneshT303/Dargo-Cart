@@ -1,12 +1,13 @@
+require("dotenv").config();
 const express = require("express");
 const mongoose = require("mongoose");
-const https = require("https");
+const nodemailer = require("nodemailer");
 const cors = require("cors");
 const path = require("path");
 
 const app = express();
-const PORT = 3000;
-const MONGO_URI = "mongodb://localhost:27017/orders";
+const PORT = process.env.PORT || 3000;
+const MONGO_URI = process.env.MONGO_URI || "mongodb://localhost:27017/orders";
 
 // ── Middleware ──────────────────────────────────────────────
 app.use(cors());
@@ -21,37 +22,19 @@ mongoose.connect(MONGO_URI)
     process.exit(1);
   });
 
-// ── Web3Forms Email Helper ──────────────────────────────────
-// Uses Web3Forms API — no SMTP / App Password needed
-const WEB3FORMS_KEY = "e69c9130-e2dc-48da-b07f-cbd363207a51";
+// ── Nodemailer Transporter (Gmail App Password from .env) ───
+const transporter = nodemailer.createTransport({
+  service: "gmail",
+  auth: {
+    user: process.env.CLIENT_EMAIL,
+    pass: process.env.CLIENT_PASSWORD
+  }
+});
 
-function sendWeb3Mail(subject, text) {
-  return new Promise((resolve) => {
-    const body = JSON.stringify({
-      access_key: WEB3FORMS_KEY,
-      subject,
-      message: text,
-      from_name: "Drago Cart",
-      email: "vigneshvicky182005@gmail.com",
-      botcheck: false
-    });
-    const req = https.request(
-      { hostname: "api.web3forms.com", path: "/submit", method: "POST",
-        headers: { "Content-Type": "application/json", "Content-Length": Buffer.byteLength(body) }
-      },
-      (res) => {
-        let data = "";
-        res.on("data", (c) => (data += c));
-        res.on("end", () => {
-          try { resolve(JSON.parse(data)); } catch { resolve({ success: false }); }
-        });
-      }
-    );
-    req.on("error", (e) => { console.error("Web3Forms error:", e.message); resolve({ success: false }); });
-    req.write(body);
-    req.end();
-  });
-}
+transporter.verify((err) => {
+  if (err) console.error("❌ Mail transporter error:", err.message);
+  else console.log("✅ Mail transporter ready →", process.env.CLIENT_EMAIL);
+});
 
 // ── Schemas & Models ───────────────────────────────────────
 
@@ -176,7 +159,7 @@ app.get("/api/orders", async (req, res) => {
   }
 });
 
-// POST /api/orders  → place order + send email via Web3Forms + clear cart
+// POST /api/orders  → place order + send email + clear cart
 app.post("/api/orders", async (req, res) => {
   try {
     const { customerName, orderId, contact, message, products, orderDate } = req.body;
@@ -200,14 +183,14 @@ app.post("/api/orders", async (req, res) => {
     // Clear the cart collection
     await Cart.deleteMany({});
 
-    // ── Send email via Nodemailer SMTP ──
+    // ── Build email body ──
     const lines = products.map(p => {
       const sub = p.cartQty * p.price;
       return `- ${p.name} | Color: ${p.color} | Price: Rs.${p.price} | Qty: ${p.cartQty} | Subtotal: Rs.${sub}`;
     });
     lines.push(`\nGRAND TOTAL: Rs.${grandTotal}`);
 
-    const messageBody =
+    const emailBody =
       "ORDER DETAILS\n====================\n" +
       `Customer Name : ${customerName}\n` +
       `Order ID      : ${orderId}\n` +
@@ -217,17 +200,15 @@ app.post("/api/orders", async (req, res) => {
       "PRODUCTS ORDERED\n====================\n" +
       lines.join("\n");
 
-    const mailOptions = {
-      from: '"Drago Cart" <vigneshvicky182005@gmail.com>',
-      to: "vigneshvicky182005@gmail.com",
+    // ── Send email via Nodemailer (fire-and-forget) ──
+    transporter.sendMail({
+      from: `"Drago Cart" <${process.env.CLIENT_EMAIL}>`,
+      to: process.env.CLIENT_EMAIL,
       subject: `New Order [${orderId}] from ${customerName} - Drago Cart`,
-      text: messageBody
-    };
-
-    // Fire-and-forget via Web3Forms
-    sendWeb3Mail(mailOptions.subject, messageBody)
-      .then(r => console.log("✅ Order email (Web3Forms):", r.success ? "sent" : "failed", r.message || ""))
-      .catch(e => console.error("❌ Web3Forms error:", e.message));
+      text: emailBody
+    })
+      .then(info => console.log("✅ Order email sent:", info.response))
+      .catch(e => console.error("❌ Order email error:", e.message));
 
     res.status(201).json({ success: true, message: "Order placed!", order });
   } catch (err) {
@@ -242,22 +223,19 @@ app.post("/api/contact", async (req, res) => {
     if (!name || !email || !message) {
       return res.status(400).json({ success: false, error: "Missing fields" });
     }
-    const mailOptions = {
-      from: '"Drago Cart" <vigneshvicky182005@gmail.com>',
-      to: "vigneshvicky182005@gmail.com",
+
+    await transporter.sendMail({
+      from: `"Drago Cart" <${process.env.CLIENT_EMAIL}>`,
+      to: process.env.CLIENT_EMAIL,
       subject: `New Contact Inquiry from ${name}`,
       text: `You have received a new contact message:\n\nName: ${name}\nEmail: ${email}\nPhone: ${phone || "N/A"}\n\nMessage:\n${message}`,
       replyTo: email
-    };
-    const result = await sendWeb3Mail(mailOptions.subject, mailOptions.text);
-    if (result.success) {
-      res.status(200).json({ success: true, message: "Message sent!" });
-    } else {
-      throw new Error(result.message || "Web3Forms rejected the request");
-    }
+    });
+
+    res.status(200).json({ success: true, message: "Message sent!" });
   } catch (err) {
     console.error("Contact route error:", err.message);
-    res.status(500).json({ success: false, error: "Failed to send email. Check App Password." });
+    res.status(500).json({ success: false, error: "Failed to send email: " + err.message });
   }
 });
 
