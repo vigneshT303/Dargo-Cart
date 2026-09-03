@@ -10,7 +10,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
 
     <style>
-        /* ── Global Reset ── */
+        /* -- Global Reset & Premium Dark Theme -- */
         *,
         *::before,
         *::after {
@@ -19,616 +19,482 @@
             padding: 0;
         }
 
-        body {
-            font-family: 'Inter', Arial, sans-serif;
-            min-height: 100vh;
+        :root {
+            --bg-dark: #07030d;
+            --bg-gradient: radial-gradient(circle at top left, #1c0836, #07030d);
+            --primary: #ff00ff; /* Vivid Magenta highlight */
+            --primary-glow: rgba(255, 0, 255, 0.5); /* Magenta glow */
+            --secondary: #f4c2ff; /* Soft twilight pink */
+            --glass-bg: rgba(25, 10, 40, 0.45);
+            --glass-border: rgba(255, 255, 255, 0.08);
+            --text-main: #f8f9fa;
+            --text-muted: #adb5bd;
         }
 
-        /* ── Page visibility & Transitions ── */
-        .page {
-            display: none;
+        body {
+            font-family: "Inter", Arial, sans-serif;
+            min-height: 100vh;
+            background: linear-gradient(rgba(11, 4, 30, 0.5), rgba(28, 8, 54, 0.6)), url('./assets/purple-bg.jpg') no-repeat center center fixed;
+            background-size: cover;
+            color: var(--text-main);
+            overflow-x: hidden;
+        }
+
+        /* -- Page Transitions -- */
+        .page:not(.active) {
+            display: none !important;
         }
 
         .page.active {
             display: block;
-            animation: pageFadeIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            animation: luxuriousFade 0.6s cubic-bezier(0.2, 1, 0.3, 1) forwards;
         }
 
-        @keyframes pageFadeIn {
+        @keyframes luxuriousFade {
             0% {
                 opacity: 0;
-                transform: translateY(15px);
+                transform: scale(0.98) translateY(20px);
+                filter: blur(4px);
             }
 
             100% {
                 opacity: 1;
-                transform: translateY(0);
+                transform: scale(1) translateY(0);
+                filter: blur(0);
             }
         }
 
-        /* ══════════════════════════════════════════
-       REGISTER PAGE
-    ══════════════════════════════════════════ */
-        #page-register {
-            height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            background: url('./assets/project.jpg') no-repeat center center fixed;
-            background-size: cover;
+        /* -- Generic Glass Containers (Forms) -- */
+        .glass-panel {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4), inset 0 0 0 1px rgba(255, 255, 255, 0.05);
+            transition: transform 0.4s ease, box-shadow 0.4s ease;
         }
 
-        .register-box {
-            width: 350px;
-            padding: 25px;
-            background: lightpink;
-            border-radius: 12px;
-            box-shadow: 0 10px 25px black;
-            text-align: center;
-            animation: float 4s ease-in-out infinite;
+        .glass-panel:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5), inset 0 0 0 1px rgba(255, 255, 255, 0.1);
         }
 
-        @keyframes float {
-            0% {
-                transform: translateY(0);
-            }
-
-            50% {
-                transform: translateY(-10px);
-            }
-
-            100% {
-                transform: translateY(0);
-            }
+        /* Typography Enhancements */
+        h1,
+        h2,
+        h3,
+        h4,
+        h5 {
+            font-family: "Inter", sans-serif;
+            font-weight: 800;
+            color: var(--secondary);
+            letter-spacing: -0.5px;
         }
 
-        .register-box h1 {
+        /* -- Generic Inputs -- */
+        input,
+        textarea {
+            width: 100%;
+            padding: 14px;
             margin-bottom: 20px;
-            color: rgb(164, 10, 191);
-            font-family: 'Times New Roman', Times, serif;
-            font-weight: bold;
-        }
-
-        .register-box input {
-            width: 100%;
-            padding: 10px;
-            margin: 10px 0;
-            border: 1px solid #ccc;
-            border-radius: 6px;
-            box-shadow: inset 2px 2px 5px black;
-        }
-
-        .register-box button {
-            width: 100%;
-            padding: 12px;
-            background: purple;
-            color: white;
-            border: none;
-            border-radius: 6px;
-            cursor: pointer;
-            box-shadow: 0 5px 0 #4b004b;
-            transition: all 0.2s ease;
-        }
-
-        .register-box button:hover {
-            background: #a020f0;
-            transform: translateY(-3px);
-            box-shadow: 0 8px 0 #4b004b;
-        }
-
-        .register-box button:active {
-            transform: translateY(2px);
-            box-shadow: 0 3px 0 #4b004b;
-        }
-
-        .register-box .switch-link {
-            margin-top: 12px;
-            font-size: 13px;
-            color: #333;
-        }
-
-        .register-box .switch-link a {
-            color: purple;
-            cursor: pointer;
-            text-decoration: underline;
-        }
-
-        /* ══════════════════════════════════════════
-       LOGIN PAGE
-    ══════════════════════════════════════════ */
-        #page-login {
-            height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            background: url('./assets/project.jpg') no-repeat center center fixed;
-            background-size: cover;
-        }
-
-        .login-box {
-            width: 320px;
-            padding: 25px;
-            background: pink;
-            border-radius: 12px;
-            box-shadow: 0 8px 20px black;
-            text-align: center;
-            transform: perspective(1000px) translateZ(0);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-        }
-
-        .login-box:hover {
-            transform: perspective(1000px) translateZ(15px);
-            box-shadow: 0 15px 30px black;
-        }
-
-        .login-box h1 {
-            margin-bottom: 20px;
-            color: purple;
-            font-family: 'Times New Roman', Times, serif;
-            font-weight: bold;
-            text-shadow: 1px 1px 2px black;
-        }
-
-        .login-box .input-box {
-            margin: 15px 0;
-            text-align: left;
-        }
-
-        .login-box .input-box label {
-            display: block;
-            font-size: 14px;
-            margin-bottom: 5px;
-            color: rgb(43, 41, 41);
-        }
-
-        .login-box .input-box input {
-            width: 100%;
-            padding: 10px;
-            border: 1px solid whitesmoke;
-            border-radius: 6px;
-            box-shadow: inset 2px 2px 5px black;
-            transition: transform 0.2s ease;
-        }
-
-        .login-box .input-box input:focus {
-            transform: scale(1.05);
-            border-color: purple;
-            outline: none;
-        }
-
-        .login-box button {
-            width: 100%;
-            padding: 12px;
-            background: purple;
-            color: white;
-            border: none;
-            border-radius: 6px;
-            cursor: pointer;
-            box-shadow: 0 5px 0 rgb(63, 1, 63);
-            transition: all 0.2s ease;
-        }
-
-        .login-box button:hover {
-            background: #a020f0;
-            transform: translateY(-3px);
-            box-shadow: 0 8px 0 rgb(29, 2, 29);
-        }
-
-        .login-box button:active {
-            transform: translateY(2px);
-            box-shadow: 0 3px 0 purple;
-        }
-
-        .login-box .switch-link {
-            margin-top: 12px;
-            font-size: 13px;
-            color: #333;
-        }
-
-        .login-box .switch-link a {
-            color: purple;
-            cursor: pointer;
-            text-decoration: underline;
-        }
-
-        /* ══════════════════════════════════════════
-       PRODUCT PAGE
-    ══════════════════════════════════════════ */
-        #page-product {
-            min-height: 100vh;
-            background: #f8f9fa;
-        }
-
-        #page-product .navbar {
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-        }
-
-        #page-product section {
-            scroll-margin-top: 80px;
-        }
-
-        .navbar-dark.bg-dark {
-            background-color: #8c5db3 !important;
-        }
-
-        #page-product .card {
-            background-color: rgb(26, 189, 222);
-            margin: 10px;
-            padding: 10px;
-            text-align: center;
-            border-radius: 8px;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-        }
-
-        #page-product .card:hover {
-            transform: translateY(-10px) scale(1.01);
-            box-shadow: 0 8px 20px black;
-        }
-
-        #page-product .card img {
-            width: 100%;
-            height: 300px;
-            object-fit: cover;
-            border-radius: 7px;
-            transition: transform 0.3s ease;
-        }
-
-        #page-product .card img:hover {
-            transform: scale(1.01);
-        }
-
-        .carousel-item img {
-            width: 100%;
-            height: 500px;
-            object-fit: cover;
-            transition: transform 0.1s ease;
-        }
-
-        .carousel-item img:hover {
-            transform: scale(1.01);
-        }
-
-        .nav-link {
-            transition: color 0.3s ease, transform 0.3s ease;
-            font-family: 'Times New Roman', Times, serif;
-            font-weight: bold;
-        }
-
-        .nav-link:hover {
-            color: #7f207f;
-            transform: scale(1.1);
-        }
-
-        #contact-section {
-            background-color: rgb(174, 42, 150);
-            padding: 40px;
-            border-radius: 10px;
-            color: white;
+            background: rgba(0, 0, 0, 0.2) !important;
+            border: 1px solid rgba(255, 255, 255, 0.15) !important;
+            border-radius: 12px !important;
+            color: var(--text-main) !important;
+            font-size: 1rem;
             transition: all 0.3s ease;
         }
 
-        #contact-section .form-control {
-            border-radius: 8px;
-            border: none;
-            padding: 10px;
+        input::placeholder,
+        textarea::placeholder {
+            color: rgba(255, 255, 255, 0.4);
         }
 
-        #contact-section .btn-primary {
-            background-color: rgb(165, 91, 169);
+        input:focus,
+        textarea:focus {
+            outline: none;
+            background: rgba(0, 0, 0, 0.4) !important;
+            border-color: var(--primary) !important;
+            box-shadow: 0 0 15px var(--primary-glow) !important;
         }
 
-        #contact-section .btn-primary:hover {
-            background-color: #8e44ad;
-            transform: scale(1.05);
+        /* -- Generic Buttons -- */
+        button,
+        .btn {
+            background: linear-gradient(135deg, #700b97, #c100e6) !important;
+            border: none !important;
+            color: white !important;
+            padding: 12px 28px;
+            font-weight: 700;
+            border-radius: 12px !important;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.2, 1, 0.3, 1) !important;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            box-shadow: 0 8px 20px rgba(193, 0, 230, 0.4);
         }
 
-        #page-product footer.bg-dark {
-            min-height: 80px;
-            background-color: #b24c89 !important;
-            text-align: center;
-            padding: 20px;
+        button:hover,
+        .btn:hover {
+            transform: translateY(-3px) scale(1.02);
+            box-shadow: 0 12px 25px rgba(193, 0, 230, 0.6), 0 0 15px var(--primary-glow);
         }
 
-        /* ══════════════════════════════════════════
-       CART PAGE
-    ══════════════════════════════════════════ */
-        #page-cart {
-            min-height: 100vh;
-            padding: 20px;
-            background: url("./assets/1.webp") no-repeat center center fixed;
-            background-size: cover;
+        button:active,
+        .btn:active {
+            transform: translateY(1px);
         }
 
-        #page-cart h1 {
-            font-family: 'Times New Roman', Times, serif;
-            font-weight: bold;
-            font-style: italic;
-            color: white;
-            margin-bottom: 20px;
-        }
-
-        #cart {
+        /* -- Registers & Logins -- */
+        #page-register,
+        #page-login {
             display: flex;
-            flex-wrap: wrap;
-            gap: 20px;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
         }
 
-        .cart-card {
-            border: 5px solid black;
-            border-radius: 40px;
-            padding: 10px;
-            width: 300px;
-            box-shadow: 0 5px 6px black;
+        .register-box,
+        .login-box {
+            width: 420px;
+            max-width: 95%;
+            padding: 48px 44px;
             text-align: center;
-            background-color: lightcoral;
-            transition: transform 0.2s ease;
+            background: rgba(20, 5, 45, 0.62) !important;
+            border: 1px solid rgba(157, 78, 221, 0.4) !important;
+            border-radius: 24px !important;
+            box-shadow: 0 0 50px rgba(112, 11, 151, 0.45), 0 20px 60px rgba(0,0,0,0.55), inset 0 0 0 1px rgba(255,255,255,0.06);
+            position: relative;
+            overflow: hidden;
         }
 
-        .cart-card:hover {
-            transform: scale(1.05);
+        .register-box::before,
+        .login-box::before {
+            content: "";
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 4px;
+            background: linear-gradient(90deg, #7b2cbf, #ff00ff, #c100e6, #7b2cbf);
+            background-size: 300% 100%;
+            animation: animateBorder 3s linear infinite;
         }
 
-        .cart-card img {
-            border-radius: 100px;
+        .register-box h1,
+        .login-box h1 {
+            font-size: 2.1rem;
+            margin-bottom: 32px;
+            background: linear-gradient(135deg, #e0aaff, #ff00ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: none;
+            filter: drop-shadow(0 0 14px rgba(193,0,230,0.6));
+        }
+
+        .switch-link {
+            margin-top: 25px;
+            color: var(--text-muted);
+            font-size: 0.95rem;
+        }
+
+        .switch-link a {
+            color: var(--secondary);
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.3s;
+        }
+
+        .switch-link a:hover {
+            color: #fff;
+            text-shadow: 0 0 10px var(--primary-glow);
+        }
+
+        /* -- Header -- */
+        .custom-header {
+            background: rgba(10, 3, 20, 0.8) !important;
+            backdrop-filter: blur(15px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            position: sticky;
+            top: 0;
+            z-index: 1050;
+            padding: 15px 0;
+            box-shadow: 0 5px 30px rgba(0, 0, 0, 0.5);
+        }
+
+        .navbar-brand {
+            font-size: 1.8rem;
+            font-weight: 900;
+            background: -webkit-linear-gradient(45deg, #e0aaff, #9d4edd);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .nav-link {
+            color: var(--text-muted) !important;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            transition: all 0.3s;
+        }
+
+        .nav-link:hover {
+            color: #fff !important;
+            text-shadow: 0 0 12px var(--primary-glow);
+            transform: translateY(-2px);
+        }
+
+        /* -- Carousel -- */
+        .carousel-item img {
+            border-radius: 20px;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.6);
+        }
+
+        /* -- Products Grid -- */
+        #prod-section {
+            padding: 40px 0;
+        }
+
+        .card {
+            background: var(--glass-bg) !important;
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--glass-border) !important;
+            border-radius: 20px !important;
+            overflow: hidden;
+            transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1) !important;
+        }
+
+        .card:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 20px 45px rgba(112,11,151,0.4), 0 0 30px rgba(193,0,230,0.22) !important;
+            border-color: rgba(193, 0, 230, 0.65) !important;
+            border-top: 2px solid #c100e6 !important;
+        }
+
+        .card-img-top {
+            height: 260px;
+            object-fit: cover;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .card-title {
+            color: #fff;
+            font-size: 1.25rem;
+        }
+
+        .card-body p {
+            color: var(--text-muted);
             margin-bottom: 10px;
         }
 
-        .cart-card h5 {
-            margin: 10px 0;
-            font-size: 20px;
-        }
-
-        .cart-card p {
-            margin: 5px 0;
-            font-size: 15px;
-            font-weight: bold;
-        }
-
-        .cart-card button {
-            margin: 5px;
-            padding: 5px 10px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            background-color: brown;
-            color: white;
-        }
-
-        .cart-card button:hover {
-            background-color: red;
-        }
-
-        #total {
-            margin-top: 20px;
-            font-size: 22px;
-            color: whitesmoke;
-        }
-
-        button.place-btn {
-            margin-top: 20px;
-            padding: 10px 20px;
-            font-size: 16px;
-            background-color: #28a745;
-            color: white;
-            border: none;
-            border-radius: 6px;
-            cursor: pointer;
-        }
-
-        button.place-btn:hover {
-            background-color: #1e7e34;
-        }
-
-        .back-btn {
-            margin-bottom: 16px;
-            padding: 8px 18px;
-            background: rgba(0, 0, 0, 0.55);
-            color: white;
-            border: none;
-            border-radius: 6px;
-            cursor: pointer;
-            font-size: 14px;
-            transition: background 0.2s;
-        }
-
-        .back-btn:hover {
-            background: rgba(0, 0, 0, 0.8);
-        }
-
-        /* ══════════════════════════════════════════
-       ORDERS PAGE
-    ══════════════════════════════════════════ */
-        #page-orders {
-            min-height: 100vh;
-            background: url("./assets/project.jpg") no-repeat center center fixed;
-            background-size: cover;
-            padding: 40px 20px;
-        }
-
-        #page-orders h1 {
-            font-family: 'Times New Roman', Times, serif;
-            font-weight: bold;
-            font-style: italic;
-            color: rgb(185, 10, 185);
-            text-align: center;
-            font-size: 2.2rem;
-            margin-bottom: 30px;
-            text-shadow: 0 2px 8px rgba(128, 0, 128, 0.3);
-        }
-
+        /* -- Cart & Orders shared UI -- */
+        #cart,
         #orders {
             display: flex;
             flex-wrap: wrap;
-            gap: 50px;
+            gap: 30px;
             justify-content: center;
-            margin-bottom: 30px;
+            margin: 40px 0;
         }
 
+        .cart-card,
         .order-card {
-            border: 5px solid #a64ca6;
-            border-radius: 12px;
-            padding: 15px;
-            width: 240px;
-            box-shadow: 0 6px 10px rgba(128, 0, 128, 0.4);
+            width: 285px;
+            padding: 22px;
+            background: linear-gradient(160deg, rgba(30,8,60,0.72), rgba(18,4,38,0.82));
+            border: 1px solid rgba(157, 78, 221, 0.45);
+            border-top: 3px solid #9d4edd;
+            border-radius: 24px;
             text-align: center;
-            background: linear-gradient(135deg, #2e0258, white);
-            transition: transform 0.2s ease;
+            transition: all 0.35s cubic-bezier(0.2,1,0.3,1);
+            box-shadow: 0 8px 32px rgba(112,11,151,0.22), 0 2px 12px rgba(0,0,0,0.4);
+            backdrop-filter: blur(14px);
         }
 
+        .cart-card:hover,
         .order-card:hover {
-            transform: scale(1.03);
+            transform: translateY(-10px) scale(1.02);
+            border-color: rgba(193,0,230,0.7);
+            box-shadow: 0 20px 50px rgba(112,11,151,0.45), 0 0 25px rgba(193,0,230,0.25), inset 0 0 0 1px rgba(255,255,255,0.08);
         }
 
+        .cart-card img,
         .order-card img {
-            border-radius: 10px;
-            margin-bottom: 10px;
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 16px;
+            margin-bottom: 15px;
         }
 
+        .cart-card h5,
         .order-card h5 {
-            margin: 10px 0;
-            font-size: 18px;
-            color: rgb(61, 2, 61);
-            font-family: 'Times New Roman', Times, serif;
+            color: #fff;
+            margin-bottom: 5px;
+        }
+
+        .cart-card span {
+            font-size: 1.4rem;
             font-weight: bold;
+            margin: 0 15px;
+            color: #fff;
         }
 
-        .order-card p {
-            margin: 5px 0;
-            font-size: 15px;
-            color: brown;
-            font-weight: bold;
+        .cart-card button {
+            padding: 8px 16px;
+            font-size: 1.2rem;
+            min-width: 45px;
         }
 
-        .form-section {
-            margin: 30px auto;
-            padding: 28px 24px;
-            border: 2px solid #800080;
-            border-radius: 12px;
-            background-color: plum;
-            width: 520px;
-            max-width: 95%;
-            box-shadow: 0 4px 8px rgba(128, 0, 128, 0.3);
-            transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
+        #cart h1,
+        #orders h1 {
+            text-align: center;
+            margin-top: 30px;
+            color: #e0aaff;
+            text-shadow: 0 0 15px rgba(157, 78, 221, 0.5);
         }
 
-        .form-section:hover {
-            transform: scale(1.01);
-            box-shadow: 0 8px 16px rgba(128, 0, 128, 0.5);
-            background-color: #dda0dd;
+        #total {
+            text-align: center;
+            font-size: 2rem;
+            color: #fff;
+            margin: 30px 0;
+        }
+
+        .place-btn,
+        .back-btn {
+            display: block;
+            margin: 20px auto;
+            width: 250px;
+            text-align: center;
+        }
+
+        /* -- Order Form -- */
+        .form-section,
+        .contact-wrapper {
+            background: linear-gradient(160deg, rgba(28,6,55,0.70), rgba(16,3,36,0.82));
+            border: 1px solid rgba(157,78,221,0.38);
+            border-radius: 25px;
+            padding: 40px;
+            max-width: 600px;
+            margin: 40px auto;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .form-section::before,
+        .contact-wrapper::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #7b2cbf, #ff00ff, #7b2cbf);
+            background-size: 200% 100%;
+            animation: animateBorder 3s linear infinite;
+        }
+
+        @keyframes animateBorder {
+            0% {
+                background-position: 100% 0;
+            }
+
+            100% {
+                background-position: -100% 0;
+            }
+        }
+
+        .form-section label,
+        .contact-wrapper label {
+            color: var(--secondary);
+            margin-bottom: 8px;
+            font-weight: 600;
+            display: block;
         }
 
         .form-section h2 {
             text-align: center;
-            color: darkmagenta;
-            margin-bottom: 16px;
-            font-size: 22px;
+            margin-bottom: 30px;
+            background: linear-gradient(135deg, #e0aaff, #ff00ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            filter: drop-shadow(0 0 10px rgba(193,0,230,0.5));
         }
 
-        .form-section label {
-            display: block;
-            margin: 10px 0 5px;
-            font-weight: bold;
-            color: black;
+        /* -- Contact Section -- */
+        .contact-wrapper {
+            max-width: 700px;
+            padding: 50px;
+            box-shadow: 0 0 50px rgba(112, 11, 151, 0.35), 0 20px 60px rgba(0,0,0,0.5);
         }
 
-        .form-section input,
-        .form-section textarea {
-            width: 100%;
-            padding: 9px 12px;
-            margin-bottom: 15px;
-            border: 1px solid #a64ca6;
-            border-radius: 6px;
-            background-color: whitesmoke;
-            font-size: 14px;
-            font-family: 'Inter', sans-serif;
-            outline: none;
-            transition: border-color 0.2s;
+        .contact-wrapper h1 {
+            background: linear-gradient(135deg, #e0aaff, #ff00ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            filter: drop-shadow(0 0 10px rgba(193,0,230,0.5));
+            margin-bottom: 32px;
         }
 
-        .form-section input:focus,
-        .form-section textarea:focus {
-            border-color: #6a0dad;
+        /* -- Footer -- */
+        .custom-footer {
+            background: #05010a;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            color: var(--text-muted);
+            padding: 30px 0;
+            margin-top: 60px;
         }
 
-        .place-order-btn {
-            display: block;
-            margin: 0 auto;
-            padding: 12px 32px;
-            font-size: 17px;
-            background-color: rgb(129, 9, 129);
-            color: white;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            box-shadow: 0 4px 8px rgba(75, 0, 130, 0.4);
-            transition: background-color 0.2s ease, transform 0.15s ease;
-            font-weight: 700;
-            letter-spacing: 0.6px;
-        }
-
-        .place-order-btn:hover {
-            background-color: #9932cc;
-            transform: scale(1.04);
-        }
-
-        .place-order-btn:disabled {
-            background-color: #aaa;
-            cursor: not-allowed;
-            transform: none;
-        }
-
-        /* Toast */
+        /* -- Toast Notifications -- */
         #toast {
             position: fixed;
-            bottom: 30px;
-            right: 30px;
-            padding: 16px 22px;
-            border-radius: 12px;
+            bottom: 40px;
+            right: 40px;
+            padding: 20px 30px;
+            border-radius: 16px;
             font-weight: 600;
-            font-size: 15px;
+            font-size: 1.1rem;
             color: white;
             opacity: 0;
-            transform: translateY(20px);
-            transition: opacity 0.4s ease, transform 0.4s ease;
+            transform: translateY(30px) scale(0.9);
+            transition: all 0.5s cubic-bezier(0.2, 1.5, 0.3, 1);
             z-index: 9999;
             pointer-events: none;
-            min-width: 290px;
-            max-width: 420px;
-            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
-            line-height: 1.5;
-            word-break: break-word;
+            max-width: 450px;
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.5), inset 0 0 0 1px rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
         }
 
         #toast.show {
             opacity: 1;
-            transform: translateY(0);
+            transform: translateY(0) scale(1);
         }
 
         #toast.success {
-            background: linear-gradient(135deg, #5b0198, #9932cc);
+            background: rgba(46, 204, 113, 0.85);
+            box-shadow: 0 10px 30px rgba(46, 204, 113, 0.4);
         }
 
         #toast.error {
-            background: linear-gradient(135deg, #b71c1c, #e53935);
+            background: rgba(231, 76, 60, 0.85);
+            box-shadow: 0 10px 30px rgba(231, 76, 60, 0.4);
         }
 
         #toast.sending {
-            background: linear-gradient(135deg, #0d47a1, #1976d2);
+            background: rgba(157, 78, 221, 0.85);
+            box-shadow: 0 10px 30px rgba(157, 78, 221, 0.4);
         }
 
-        /* Spinner */
         .spinner {
             display: inline-block;
-            width: 16px;
-            height: 16px;
-            border: 3px solid rgba(255, 255, 255, 0.35);
+            width: 18px;
+            height: 18px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
             border-top-color: #fff;
             border-radius: 50%;
-            animation: spin 0.7s linear infinite;
+            animation: spin 0.8s bezier infinite;
             vertical-align: middle;
-            margin-right: 8px;
+            margin-right: 10px;
         }
 
         @keyframes spin {
@@ -637,17 +503,15 @@
             }
         }
 
-        /* ── Status / msg helpers ── */
+        /* Helpers */
         .msg-success {
-            color: green;
-            margin-top: 8px;
-            font-size: 15px;
+            color: #2ecc71;
+            margin-top: 15px;
         }
 
         .msg-error {
-            color: red;
-            margin-top: 8px;
-            font-size: 15px;
+            color: #e74c3c;
+            margin-top: 15px;
         }
     </style>
 </head>
@@ -658,7 +522,7 @@
        PAGE 1 – REGISTER
   ═══════════════════════════════════════════════════ -->
     <div id="page-register" class="page active">
-        <div class="register-box">
+        <div class="register-box glass-panel">
             <h1>Register Form</h1>
             <form id="registerForm">
                 <input type="text" id="reg-name" placeholder="Enter name" required>
@@ -676,7 +540,7 @@
        PAGE 2 – LOGIN
   ═══════════════════════════════════════════════════ -->
     <div id="page-login" class="page">
-        <div class="login-box">
+        <div class="login-box glass-panel">
             <h1>Login Form</h1>
             <form id="loginForm">
                 <div class="input-box">
@@ -699,7 +563,7 @@
        PAGE 3 – PRODUCTS
   ═══════════════════════════════════════════════════ -->
     <div id="page-product" class="page">
-        <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <nav class="navbar navbar-expand-lg navbar-dark custom-header">
             <div class="container-fluid">
                 <a class="navbar-brand" href="#">Drago Cart</a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
@@ -709,10 +573,10 @@
                     <ul id="header" class="navbar-nav ms-auto"></ul>
                     <ul class="navbar-nav">
                         <li class="nav-item">
-                            <a class="nav-link" href="#" onclick="navigateToCart()">🛒 Cart</a>
+                            <a class="nav-link" href="#" onclick="navigateToCart(); return false;">🛒 Cart</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-warning" href="#" onclick="logOut()">🚪 Logout</a>
+                            <a class="nav-link text-warning" href="#" onclick="logOut(); return false;">🚪 Logout</a>
                         </li>
                     </ul>
                 </div>
@@ -745,42 +609,46 @@
         <section>
             <div id="contact-section" class="container mt-4">
                 <div class="row justify-content-center">
-                    <div class="col-md-8 col-lg-6">
-                        <h1>
-                            <center>Contact Us</center>
-                        </h1>
-                        <form>
-                            <div class="mb-3">
-                                <label class="form-label">Name:</label>
-                                <input type="text" class="form-control" placeholder="Enter your name" required>
-                            </div>
-                            <div class="mb-3">
-                                <label class="form-label">Email:</label>
-                                <input type="email" class="form-control" placeholder="Enter your email" required>
-                            </div>
-                            <div class="mb-3">
-                                <label class="form-label">Contact no:</label>
-                                <input type="text" class="form-control" placeholder="Contact" required>
-                            </div>
-                            <div class="mb-3">
-                                <label class="form-label">Message:</label>
-                                <textarea class="form-control" rows="4" placeholder="Enter your message"
-                                    required></textarea>
-                            </div>
-                            <button type="submit" class="btn btn-primary">Send Message</button>
-                        </form>
+                    <div class="col-md-10 col-lg-8">
+                        <div class="contact-wrapper">
+                            <h1>Contact Us</h1>
+                            <form id="contactFormAjax">
+                                <div class="mb-3">
+                                    <label class="form-label">Name:</label>
+                                    <input type="text" id="contactName" class="form-control"
+                                        placeholder="Enter your name" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Email:</label>
+                                    <input type="email" id="contactEmail" class="form-control"
+                                        placeholder="Enter your email" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Contact no:</label>
+                                    <input type="text" id="contactPhone" class="form-control"
+                                        placeholder="Contact number" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Message:</label>
+                                    <textarea id="contactMessage" class="form-control" rows="4"
+                                        placeholder="Enter your message" required></textarea>
+                                </div>
+                                <button type="submit" id="contactSubmitBtn" class="btn btn-primary">Send
+                                    Message</button>
+                            </form>
+                        </div>
                     </div>
                 </div>
             </div>
         </section>
 
-        <footer class="bg-dark text-white text-center py-3 mt-4" id="footer"></footer>
+        <footer class="custom-footer text-center mt-4" id="footer"></footer>
     </div>
 
     <!-- ═══════════════════════════════════════════════════
        PAGE 4 – CART
   ═══════════════════════════════════════════════════ -->
-    <div id="page-cart" class="page">
+    <div id="page-cart" class="page" style="min-height:100vh;padding:30px 20px;background:radial-gradient(ellipse at top,rgba(112,11,151,0.13),transparent 70%);">
         <button class="back-btn" onclick="showPage('page-product')">← Back to Products</button>
         <h1>My Cart</h1>
         <div id="cart"></div>
@@ -791,7 +659,7 @@
     <!-- ═══════════════════════════════════════════════════
        PAGE 5 – ORDERS
   ═══════════════════════════════════════════════════ -->
-    <div id="page-orders" class="page">
+    <div id="page-orders" class="page" style="min-height:100vh;padding:30px 20px;background:radial-gradient(ellipse at top,rgba(112,11,151,0.13),transparent 70%);">
         <button class="back-btn" onclick="showPage('page-cart')">← Back to Cart</button>
         <h1>🛒 My Orders</h1>
         <div id="orders"></div>
@@ -823,7 +691,7 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script>
         /* ══════════════════════════════════════
-           PAGE ROUTER (Clean URLs via History API)
+           PAGE ROUTER (Hash-Based routing for Local Run)
         ══════════════════════════════════════ */
         function showPage(pageId, pushToHistory = true) {
             // Hide all pages
@@ -836,10 +704,10 @@
             if (pageId === 'page-cart') renderCart();
             if (pageId === 'page-orders') renderOrders();
 
-            // Update Browser URL cleanly
+            // Update Browser URL securely for HTML local file
             if (pushToHistory) {
-                const path = '/' + pageId.replace('page-', '');
-                window.history.pushState({ pageId }, '', path);
+                const hash = '#' + pageId.replace('page-', '');
+                window.history.pushState({ pageId }, '', hash);
             }
         }
 
@@ -852,14 +720,23 @@
             }
         });
 
-        // Initialize App Route from current URL
+        // Initialize App Route from current Hash
         function initRoute() {
-            let path = window.location.pathname.substring(1); // removes leading '/'
+            let hash = window.location.hash.substring(1); // removes leading '#'
+
+            // Handle internal product page anchors smoothly
+            if (['homeCarousel', 'products-section', 'contact-section'].includes(hash)) {
+                if (document.getElementById('page-product').classList.contains('active')) {
+                    return; // Already on product page, just scroll natively
+                }
+                hash = 'product'; // Initial load, force product page
+            }
+
             let targetPage = 'page-register'; // default fallback
 
             // Map clean URLs back to div IDs
-            if (['login', 'product', 'cart', 'orders', 'register'].includes(path)) {
-                targetPage = 'page-' + path;
+            if (['login', 'product', 'cart', 'orders', 'register'].includes(hash)) {
+                targetPage = 'page-' + hash;
             }
 
             showPage(targetPage, false);
@@ -935,74 +812,98 @@
         };
 
         /* ══════════════════════════════════════
-           PRODUCTS  (loaded from product.json)
+           PRODUCTS
         ══════════════════════════════════════ */
         let productsLoaded = false;
 
         function loadProducts() {
             if (productsLoaded) return;
-            fetch('product.json')
-                .then(r => r.json())
-                .then(siteData => {
-                    productsLoaded = true;
 
-                    /* Header nav */
-                    const headerUl = document.getElementById('header');
-                    siteData.header.forEach(item => {
-                        let li = document.createElement('li');
-                        li.classList.add('nav-item');
-                        let linkTarget = '#';
-                        if (item.toLowerCase() === 'home') linkTarget = '#homeCarousel';
-                        if (item.toLowerCase() === 'products') linkTarget = '#products-section';
-                        if (item.toLowerCase() === 'contact') linkTarget = '#contact-section';
-                        li.innerHTML = `<a class="nav-link" href="${linkTarget}">${item}</a>`;
-                        headerUl.appendChild(li);
-                    });
+            // Embedded site data (avoids CORS issues on file:/// protocol)
+            const siteData = {
+                "header": ["Home", "Products", "Contact"],
+                "carousel": [
+                    { "image": "./assets/home1.avif", "title": "First Slide", "desc": "Some description for the first slide." },
+                    { "image": "./assets/side2.webp", "title": "Second Slide", "desc": "Some description for the second slide." },
+                    { "image": "./assets/side3.webp", "title": "Third Slide", "desc": "Some description for the third slide." }
+                ],
+                "products": [
+                    { "id": 1, "name": "Samsung Galaxy A24", "price": 82000, "color": "Black", "image": "./assets/product1.jpeg" },
+                    { "id": 2, "name": "Fastrack Watch", "price": 2500, "color": "Green", "image": "./assets/product2.jpeg" },
+                    { "id": 3, "name": "RGB Mouse", "price": 1500, "color": "Gray", "image": "./assets/product3.jpeg" },
+                    { "id": 4, "name": "Smart watch Ultra", "price": 3000, "color": "Red", "image": "./assets/product4.jpeg" },
+                    { "id": 5, "name": "Iphone 15", "price": 65000, "color": "light blue", "image": "./assets/product5.jpeg" },
+                    { "id": 6, "name": "Joy stick", "price": 2000, "color": "Black", "image": "./assets/product6.jpeg" },
+                    { "id": 7, "name": "Iphone 17 Promax", "price": 120000, "color": "Orange", "image": "./assets/product7.jpeg" },
+                    { "id": 8, "name": "Sandisk Pendrive", "price": 1500, "color": "Red", "image": "./assets/product8.jpeg" },
+                    { "id": 9, "name": "Rolex Watch", "price": 6000, "color": "Glod", "image": "./assets/product9.jpeg" },
+                    { "id": 10, "name": "Gaming Laptop", "price": 85000, "color": "Black", "image": "./assets/p1.webp" }
+                ],
+                "contact": {
+                    "email": "support@myshop.com",
+                    "phone": "+91 9876543210",
+                    "address": "Tiruchirappalli, Tamil Nadu, India"
+                },
+                "footer": "© 2026 vignesh — All Rights Reserved"
+            };
 
-                    /* Carousel */
-                    const indicators = document.getElementById('carousel-indicators');
-                    const inner = document.getElementById('carousel-inner');
-                    siteData.carousel.forEach((slide, index) => {
-                        let btn = document.createElement('button');
-                        btn.type = 'button';
-                        btn.setAttribute('data-bs-target', '#homeCarousel');
-                        btn.setAttribute('data-bs-slide-to', index);
-                        if (index === 0) btn.classList.add('active');
-                        indicators.appendChild(btn);
+            productsLoaded = true;
 
-                        let div = document.createElement('div');
-                        div.classList.add('carousel-item');
-                        if (index === 0) div.classList.add('active');
-                        div.innerHTML = `
-              <img src="${slide.image}" class="d-block w-100" alt="${slide.title}">
-              <div class="carousel-caption d-none d-md-block">
-                <h5>${slide.title}</h5>
-                <p>${slide.desc}</p>
-              </div>`;
-                        inner.appendChild(div);
-                    });
+            /* Header nav */
+            const headerUl = document.getElementById('header');
+            siteData.header.forEach(item => {
+                let li = document.createElement('li');
+                li.classList.add('nav-item');
+                let linkTarget = '#';
+                if (item.toLowerCase() === 'home') linkTarget = '#homeCarousel';
+                if (item.toLowerCase() === 'products') linkTarget = '#products-section';
+                if (item.toLowerCase() === 'contact') linkTarget = '#contact-section';
+                li.innerHTML = `<a class="nav-link" href="${linkTarget}">${item}</a>`;
+                headerUl.appendChild(li);
+            });
 
-                    /* Product cards */
-                    const productsDiv = document.getElementById('products');
-                    siteData.products.forEach(p => {
-                        let col = document.createElement('div');
-                        col.classList.add('col-lg-3', 'col-md-4', 'col-sm-6');
-                        col.innerHTML = `
-              <div class="card mb-4">
-                <img src="${p.image}" class="card-img-top" alt="${p.name}">
-                <div class="card-body">
-                  <h5 class="card-title">${p.name}</h5>
-                  <p class="card-text">Color: ${p.color}</p>
-                  <p class="card-text">Price: ₹${p.price}</p>
-                  <button class="btn btn-primary" onclick='addToCart(${JSON.stringify(p)})'>Add to Cart</button>
-                </div>
-              </div>`;
-                        productsDiv.appendChild(col);
-                    });
+            /* Carousel */
+            const indicators = document.getElementById('carousel-indicators');
+            const inner = document.getElementById('carousel-inner');
+            siteData.carousel.forEach((slide, index) => {
+                let btn = document.createElement('button');
+                btn.type = 'button';
+                btn.setAttribute('data-bs-target', '#homeCarousel');
+                btn.setAttribute('data-bs-slide-to', index);
+                if (index === 0) btn.classList.add('active');
+                indicators.appendChild(btn);
 
-                    document.getElementById('footer').innerText = siteData.footer;
-                })
-                .catch(err => console.error('Error loading data:', err));
+                let div = document.createElement('div');
+                div.classList.add('carousel-item');
+                if (index === 0) div.classList.add('active');
+                div.innerHTML = `
+      <img src="${slide.image}" class="d-block w-100" alt="${slide.title}">
+      <div class="carousel-caption d-none d-md-block">
+        <h5>${slide.title}</h5>
+        <p>${slide.desc}</p>
+      </div>`;
+                inner.appendChild(div);
+            });
+
+            /* Product cards */
+            const productsDiv = document.getElementById('products');
+            siteData.products.forEach(p => {
+                let col = document.createElement('div');
+                col.classList.add('col-lg-3', 'col-md-4', 'col-sm-6');
+                col.innerHTML = `
+      <div class="card mb-4">
+        <img src="${p.image}" class="card-img-top" alt="${p.name}">
+        <div class="card-body">
+          <h5 class="card-title">${p.name}</h5>
+          <p class="card-text">Color: ${p.color}</p>
+          <p class="card-text">Price: ₹${p.price}</p>
+          <button class="btn btn-primary" onclick='addToCart(${JSON.stringify(p)})'>Add to Cart</button>
+        </div>
+      </div>`;
+                productsDiv.appendChild(col);
+            });
+
+            document.getElementById('footer').innerText = siteData.footer;
         }
 
         function addToCart(product) {
@@ -1136,7 +1037,6 @@
         document.getElementById('orderForm').addEventListener('submit', async function (e) {
             e.preventDefault();
 
-            const WEB3FORMS_ACCESS_KEY = "e69c9130-e2dc-48da-b07f-cbd363207a51";
             const ordersList = JSON.parse(localStorage.getItem('orders')) || [];
             const customerName = document.getElementById('custName').value.trim();
             const orderId = document.getElementById('orderId').value.trim();
@@ -1145,53 +1045,120 @@
             const submitBtn = document.getElementById('submitBtn');
             const orderDate = new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' });
 
+            // Validate required fields before submitting
+            if (!customerName || !orderId || !contact) {
+                showToast('Please fill in Name, Order ID, and Contact No.', 'error', 5000);
+                return;
+            }
+            if (!ordersList.length) {
+                showToast('No products in order. Go back and add items to cart.', 'error', 5000);
+                return;
+            }
+
             submitBtn.disabled = true;
-            submitBtn.innerHTML = '<span class="spinner"></span>Sending...';
-            showToast('Placing your order and sending email...', 'sending', 20000);
+            submitBtn.innerHTML = '<span class="spinner"></span>Processing...';
+            showToast('Placing your order and saving to database...', 'sending', 20000);
 
-            const messageBody =
-                'ORDER DETAILS\n' +
-                '====================\n' +
-                'Customer Name : ' + customerName + '\n' +
-                'Order ID      : ' + orderId + '\n' +
-                'Contact No    : ' + contact + '\n' +
-                'Order Date    : ' + orderDate + '\n' +
-                'Message       : ' + (custMessage || 'None') + '\n\n' +
-                'PRODUCTS ORDERED\n' +
-                '====================\n' +
-                buildProductText();
+            // Map local ordersList to match backend product schema
+            const productsPayload = ordersList.map(item => ({
+                productId: item.id,
+                name: item.name,
+                color: item.color,
+                price: item.price,
+                image: item.image,
+                cartQty: item.cartQty
+            }));
 
+            // Correct payload sent to /api/orders
             const payload = {
-                access_key: WEB3FORMS_ACCESS_KEY,
-                subject: `New Order [${orderId}] from ${customerName} - Drago Cart`,
-                from_name: 'Drago Cart',
-                name: customerName,
-                email: 'vigneshvicky182005@gmail.com',
-                message: messageBody,
-                botcheck: false
+                customerName,
+                orderId,
+                contact,
+                message: custMessage,
+                orderDate,
+                products: productsPayload
             };
 
             try {
-                const res = await fetch('https://api.web3forms.com/submit', {
+                const backendUrl = window.location.protocol === 'file:'
+                    ? 'http://localhost:3000/api/orders'
+                    : (window.location.port && window.location.port !== '3000'
+                        ? `http://${window.location.hostname}:3000/api/orders`
+                        : '/api/orders');
+
+                const res = await fetch(backendUrl, {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    },
                     body: JSON.stringify(payload)
                 });
                 const data = await res.json();
 
                 if (res.ok && data.success) {
-                    showToast('Order placed! Email sent to vigneshvicky182005@gmail.com', 'success', 6000);
+                    showToast('✅ Order placed successfully! Saved to DB.', 'success', 6000);
                     localStorage.removeItem('cart');
                     localStorage.removeItem('orders');
+                    document.getElementById('orderForm').reset();
                     setTimeout(() => showPage('page-product'), 3500);
                 } else {
-                    throw new Error(data.message || `Status ${res.status} - Web3Forms rejected.`);
+                    throw new Error(data.error || `Status ${res.status} - Server rejected order.`);
                 }
             } catch (err) {
-                console.error('Web3Forms error:', err.message);
-                showToast('Failed: ' + err.message, 'error', 15000);
+                console.error('Order error:', err.message);
+                showToast('Failed to place order: ' + err.message, 'error', 15000);
                 submitBtn.disabled = false;
                 submitBtn.innerHTML = '✅ Place Order';
+            }
+        });
+
+        /* ══════════════════════════════════════
+           CONTACT FORM WEB3FORMS AJAX
+        ══════════════════════════════════════ */
+        document.getElementById('contactFormAjax').addEventListener('submit', async function (e) {
+            e.preventDefault();
+            const btn = document.getElementById('contactSubmitBtn');
+            const originalText = btn.innerText;
+
+            btn.innerHTML = '<span class="spinner"></span>Sending...';
+            btn.disabled = true;
+            showToast('Sending your message...', 'sending', 5000);
+
+            const payload = {
+                access_key: "e69c9130-e2dc-48da-b07f-cbd363207a51",
+                subject: "New Contact Message",
+                from_name: "Drago Cart Contact",
+                name: document.getElementById('contactName').value,
+                email: document.getElementById('contactEmail').value,
+                phone: document.getElementById('contactPhone').value,
+                message: document.getElementById('contactMessage').value,
+                botcheck: false
+            };
+
+            try {
+                const res = await fetch("https://api.web3forms.com/submit", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Accept": "application/json"
+                    },
+                    body: JSON.stringify(payload)
+                });
+                const data = await res.json();
+
+                if (data.success) {
+                    showToast('Message sent successfully! We will get back to you.', 'success', 5000);
+                    document.getElementById('contactFormAjax').reset();
+                } else {
+                    throw new Error(data.message || 'Error sending message');
+                }
+            } catch (err) {
+                console.error("Contact form error:", err);
+                showToast("Failed to send message: " + err.message, "error", 8000);
+            } finally {
+                btn.innerHTML = originalText;
+                btn.disabled = false;
             }
         });
     </script>

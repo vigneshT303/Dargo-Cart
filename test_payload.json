@@ -1,0 +1,1 @@
+{"customerName": "John", "orderId": "123", "contact": "123", "message": "", "products": [{"productId": 1, "name": "A", "color": "B", "price": 100, "image": "img", "cartQty": 1}], "orderDate": "Today"}

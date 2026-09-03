@@ -1,6 +1,6 @@
 const express = require("express");
 const mongoose = require("mongoose");
-const nodemailer = require("nodemailer");
+const https = require("https");
 const cors = require("cors");
 const path = require("path");
 
@@ -20,6 +20,38 @@ mongoose.connect(MONGO_URI)
     console.error("❌ MongoDB connection error:", err.message);
     process.exit(1);
   });
+
+// ── Web3Forms Email Helper ──────────────────────────────────
+// Uses Web3Forms API — no SMTP / App Password needed
+const WEB3FORMS_KEY = "e69c9130-e2dc-48da-b07f-cbd363207a51";
+
+function sendWeb3Mail(subject, text) {
+  return new Promise((resolve) => {
+    const body = JSON.stringify({
+      access_key: WEB3FORMS_KEY,
+      subject,
+      message: text,
+      from_name: "Drago Cart",
+      email: "vigneshvicky182005@gmail.com",
+      botcheck: false
+    });
+    const req = https.request(
+      { hostname: "api.web3forms.com", path: "/submit", method: "POST",
+        headers: { "Content-Type": "application/json", "Content-Length": Buffer.byteLength(body) }
+      },
+      (res) => {
+        let data = "";
+        res.on("data", (c) => (data += c));
+        res.on("end", () => {
+          try { resolve(JSON.parse(data)); } catch { resolve({ success: false }); }
+        });
+      }
+    );
+    req.on("error", (e) => { console.error("Web3Forms error:", e.message); resolve({ success: false }); });
+    req.write(body);
+    req.end();
+  });
+}
 
 // ── Schemas & Models ───────────────────────────────────────
 
@@ -168,8 +200,7 @@ app.post("/api/orders", async (req, res) => {
     // Clear the cart collection
     await Cart.deleteMany({});
 
-    // ── Send email via Web3Forms (no SMTP credentials needed) ──
-    const WEB3FORMS_KEY = "e69c9130-e2dc-48da-b07f-cbd363207a51";
+    // ── Send email via Nodemailer SMTP ──
     const lines = products.map(p => {
       const sub = p.cartQty * p.price;
       return `- ${p.name} | Color: ${p.color} | Price: Rs.${p.price} | Qty: ${p.cartQty} | Subtotal: Rs.${sub}`;
@@ -186,26 +217,47 @@ app.post("/api/orders", async (req, res) => {
       "PRODUCTS ORDERED\n====================\n" +
       lines.join("\n");
 
-    const payload = {
-      access_key: WEB3FORMS_KEY,
+    const mailOptions = {
+      from: '"Drago Cart" <vigneshvicky182005@gmail.com>',
+      to: "vigneshvicky182005@gmail.com",
       subject: `New Order [${orderId}] from ${customerName} - Drago Cart`,
-      from_name: "Drago Cart",
-      name: customerName,
-      email: "vigneshvicky182005@gmail.com",
-      message: messageBody,
-      botcheck: false
+      text: messageBody
     };
 
-    // Fire-and-forget — don't block the response for email
-    fetch("https://api.web3forms.com/submit", {
-      method: "POST",
-      headers: { "Content-Type": "application/json", Accept: "application/json" },
-      body: JSON.stringify(payload)
-    }).catch(e => console.error("Web3Forms error:", e.message));
+    // Fire-and-forget via Web3Forms
+    sendWeb3Mail(mailOptions.subject, messageBody)
+      .then(r => console.log("✅ Order email (Web3Forms):", r.success ? "sent" : "failed", r.message || ""))
+      .catch(e => console.error("❌ Web3Forms error:", e.message));
 
     res.status(201).json({ success: true, message: "Order placed!", order });
   } catch (err) {
     res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+// POST /api/contact  → Send contact form message via email
+app.post("/api/contact", async (req, res) => {
+  try {
+    const { name, email, phone, message } = req.body;
+    if (!name || !email || !message) {
+      return res.status(400).json({ success: false, error: "Missing fields" });
+    }
+    const mailOptions = {
+      from: '"Drago Cart" <vigneshvicky182005@gmail.com>',
+      to: "vigneshvicky182005@gmail.com",
+      subject: `New Contact Inquiry from ${name}`,
+      text: `You have received a new contact message:\n\nName: ${name}\nEmail: ${email}\nPhone: ${phone || "N/A"}\n\nMessage:\n${message}`,
+      replyTo: email
+    };
+    const result = await sendWeb3Mail(mailOptions.subject, mailOptions.text);
+    if (result.success) {
+      res.status(200).json({ success: true, message: "Message sent!" });
+    } else {
+      throw new Error(result.message || "Web3Forms rejected the request");
+    }
+  } catch (err) {
+    console.error("Contact route error:", err.message);
+    res.status(500).json({ success: false, error: "Failed to send email. Check App Password." });
   }
 });
 
